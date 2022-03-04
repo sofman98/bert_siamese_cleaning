@@ -3,8 +3,10 @@ from data_processing.file_management import load_dataset
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 from data_processing.data_processing import process_dataset
 from models.models import build_siamese_network
+from models.difference_layer import DifferenceLayer
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import load_model
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 
 if __name__ == "__main__":
@@ -35,9 +37,29 @@ if __name__ == "__main__":
 
 
   # HYPER-PARAMETER RANGES (for tuning)
-  range_num_dense_layers = [1, 2, 3, 4] 
+  range_num_dense_layers = [1, 2, 3] 
   range_embedding_size = [4, 8, 16]
-  range_optimizer = ['adam', 'sgd']
+  range_optimizer = ['adam']
+
+  # Callbacks
+  ## early stopping
+  es_callback = tf.keras.callbacks.EarlyStopping(
+    monitor='val_accuracy',
+    patience=20,
+  )
+  ## checkpoint
+  cp_callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath='temp_model_delete_me.h5',
+    save_best_only=True,
+    verbose=1,
+    monitor='val_accuracy', 
+    mode='max'
+  )
+
+  # create a file for saving the best registered results
+  with open('grid_search_results.csv', 'w') as file:
+    file.write('num_dense_layers,embedding_size,optimizer,loss,accuracy\n')
+  
 
   ########   GRID SEARCH   ########
 
@@ -53,22 +75,6 @@ if __name__ == "__main__":
         )
         model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
-        # Callbacks
-        ## early stopping
-        es_callback = tf.keras.callbacks.EarlyStopping(
-          monitor='val_accuracy',
-          patience=20,
-        )
-
-        ## checkpoint
-        # cp_callback = tf.keras.callbacks.ModelCheckpoint(
-        #   filepath=model_save_path,
-        #   save_best_only=True,
-        #   verbose=1,
-        #   monitor='val_accuracy', 
-        #   mode='max'
-        # )
-
         # Train
         model.fit(
             [X_train[:, :num_features], X_train[:, num_features:]], y_train, 
@@ -76,5 +82,15 @@ if __name__ == "__main__":
             batch_size=training_batch_size,
             verbose=2,
             validation_data=([X_test[:, :num_features], X_test[:, num_features:]], y_test),
-            callbacks=[es_callback]
+            callbacks=[es_callback, cp_callback]
         )
+
+        # when training is over
+        ## load the best weights for this set of hyperparameters
+        model = load_model('temp_model_delete_me.h5', custom_objects={'DifferenceLayer': DifferenceLayer})
+        ## calculate the loss & accuracy
+        loss, accuracy = model.evaluate([X_test[:, :num_features], X_test[:, num_features:]], y_test)
+        ## then save the results along with the architecture for later
+        with open('grid_search_results.csv', 'a') as file:
+          file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{accuracy}\n')
+
