@@ -79,7 +79,7 @@ def generate_negative_data(
           & (dataset.id_dashmote != out1_id_dashmote)
       ]
       # we randomly sample from these outlets
-      out2 = int(same_cluster_different_outlets.sample().id_dashmote)
+      out2_id_dashmote = int(same_cluster_different_outlets.sample().id_dashmote)
       negative_data.append([out1_id_dashmote, out2_id_dashmote, 0])
         
     return np.stack(negative_data)
