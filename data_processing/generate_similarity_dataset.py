@@ -77,8 +77,6 @@ def generate_negative_data(
           & (dataset.id_dashmote != out1.id_dashmote)
       ]
 
-      print(same_cluster_different_outlets[['id_dashmote','persistent_cluster']])
-
       # we randomly sample from these outlets
       out2_id_dashmote = int(same_cluster_different_outlets.sample().id_dashmote)
       negative_data.append([out1.id_dashmote, out2_id_dashmote, 0])
