@@ -21,7 +21,9 @@ def build_embedding_network(
   # we build the network according the number of dense layers and the embedding_size
   for l in range(num_dense_layers,0,-1):
     layer = layers.Dense(embedding_size*(2**(l-1)), activation='relu')(layer)
-    layer = layers.BatchNormalization()(layer)
+    # we add a batchnormalization layer between dense ones
+    if l!=1:  #if not the last layer (embedding)
+      layer = layers.BatchNormalization()(layer)
 
   output = layer
   return Model(input, output)
