@@ -1,7 +1,7 @@
 from pickletools import optimize
-from file_management import load_dataset
-from generate_similarity_dataset import generate_feature_similarity_dataset
-from data_processing import process_dataset
+from data_processing.file_management import load_dataset
+from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
+from data_processing.data_processing import process_dataset
 from models.models import build_siamese_network
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 

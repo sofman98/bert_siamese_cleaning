@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import random
 from data_processing.data_processing import process_dataset
-from file_management import save_parquet
+from data_processing.file_management import save_parquet
 
 def filter_features(
       dataset,
