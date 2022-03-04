@@ -67,16 +67,16 @@ def generate_negative_data(
     # we stop when we have enough negative instances
     while len(negative_data) != (number_positive_instances * NUM_NEG):   # len() is O(1) so it's ok to call it every time
       # randomly select one outlet from the dataset
-      out1 = random.randint(0, outlets.shape[0]-1)
-      out1_id_dashmote = outlets.iloc[out1].id_dashmote
+      out1 = random.randint(0, dataset.shape[0]-1)
+      out1_id_dashmote = dataset.iloc[out1].id_dashmote
 
       # look for outlets in the same block as out1
       ## but that have a different id_dashmote
-      out1_persistent_cluster = outlets.iloc[out1].persistent_cluster
+      out1_persistent_cluster = dataset.iloc[out1].persistent_cluster
 
-      same_cluster_different_outlets = outlets[
-          (outlets.persistent_cluster == out1_persistent_cluster)
-          & (outlets.id_dashmote != out1_id_dashmote)
+      same_cluster_different_outlets = dataset[
+          (dataset.persistent_cluster == out1_persistent_cluster)
+          & (dataset.id_dashmote != out1_id_dashmote)
       ]
       # we randomly sample from these outlets
       out2 = int(same_cluster_different_outlets.sample().id_dashmote)
