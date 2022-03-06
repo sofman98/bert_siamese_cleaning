@@ -1,29 +1,10 @@
 import numpy as np
 import pandas as pd
 import random
-from data_processing.data_processing import process_dataset
+from data_processing.data_processing import preprocess_dataset
+from data_processing.data_processing import filter_features
 from data_processing.file_management import save_csv
 import itertools as it
-
-def filter_features(
-    dataset,
-    features=[]
-  ):
-  """
-  we filter the dataset according desired features
-  """
-  # we remove the incorrect feature names
-  for index, feature in enumerate(features):
-    if feature not in dataset.columns:
-        print(f'Error: no feature named {feature}.')
-        features.pop(index)
-
-  # we provide default values
-  ## if features is empty, keep the original features
-  if features == []:
-    features = list(dataset.columns)
-  
-  return dataset[features]
 
 def generate_positive_data(dataset):
   """
@@ -111,7 +92,7 @@ def generate_pair_similarity_dataset(
   NUM_NEG==1 by default, the dataset is balanced
   """
   print("Processing dataset...")
-  dataset = process_dataset(dataset)
+  dataset = preprocess_dataset(dataset)
 
   print('Generating pair similarity dataset..')
   print('Generating positive instances..')

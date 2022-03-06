@@ -33,7 +33,7 @@ def normalize_lat_lon(
 
   return dataset
 
-def process_dataset(
+def preprocess_dataset(
       dataset,
       encode_columns=['id_dashmote', 'persistent_cluster'],
       normalize_latitude_and_longitude=True
@@ -50,3 +50,23 @@ def process_dataset(
 
   # we finally return the processed dataset
   return dataset
+
+def filter_features(
+    dataset,
+    features=[]
+  ):
+  """
+  we filter the dataset according desired features
+  """
+  # we remove the incorrect feature names
+  for index, feature in enumerate(features):
+    if feature not in dataset.columns:
+        print(f'Error: no feature named {feature}.')
+        features.pop(index)
+
+  # we provide default values
+  ## if features is empty, keep the original features
+  if features == []:
+    features = list(dataset.columns)
+  
+  return dataset[features]

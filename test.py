@@ -3,7 +3,7 @@ from data_processing.file_management import load_dataset_csv
 from tensorflow.math import confusion_matrix
 import numpy as np
 import pandas as pd
-import seaborn as sn
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 # some important variables
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     # we display the results
     print('Confusion Matrix:\n',confusion_matrix)
-    ax = sn.heatmap(confusion_matrix, annot=True, cmap='Blues')
+    ax = sns.heatmap(confusion_matrix, annot=True, cmap='Blues')
     ax.set_title('Confusion Matrix\n\n')
     ax.set_xlabel('\nPredicted Values')
     ax.set_ylabel('Actual Values ')
@@ -43,7 +43,6 @@ if __name__ == "__main__":
     ax.xaxis.set_ticklabels(['Negative','Positive'])
     ax.yaxis.set_ticklabels(['Negative','Positive'])
     plt.show()
-
 
 
         
