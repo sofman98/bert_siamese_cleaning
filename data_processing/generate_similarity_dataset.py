@@ -136,10 +136,10 @@ def generate_pair_similarity_dataset(
     # combining the positive and negative data to form a pair similarity dataset
     pair_similarity_dataset = np.concatenate([positive_data, negative_data], axis = 0)
 
-  # converting back to DataFrame
 
   #saving the new generate dataset, if given a path
   if save_to:
+    # converting back to DataFrame
     pair_similarity_df = pd.DataFrame(data=pair_similarity_dataset, columns=['outlet1', 'outlet2', 'similarity'])
     print(f'Saving the pair similarity dataset to {save_to}..')
     save_csv(pair_similarity_df, save_to)

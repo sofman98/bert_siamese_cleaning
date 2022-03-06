@@ -22,9 +22,9 @@ results_save_path = f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name
 
 
 # HYPER-PARAMETER RANGES (for tuning)
-range_num_dense_layers = [5] 
-range_embedding_size = [32]
-range_optimizer = ['adam']
+range_num_dense_layers = [1, 2, 3] 
+range_embedding_size = [8, 16, 32]
+range_optimizer = ['adam', 'sgd']
 
 if __name__ == "__main__":
 
