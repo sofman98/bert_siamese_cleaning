@@ -47,10 +47,10 @@ def generate_positive_data(dataset):
       # we get all combinations
       # example: [5, 6, 7] => [5, 6], [5, 7], [6, 7], [6, 5]..etc
       if len(indexes) > 1:
-        indexes_combinatons = np.array(list(it.permutations(indexes, 2)))
+        indexes_permutation = np.array(list(it.permutations(indexes, 2)))
         # we add a (1) to signify similarity
-        ones = np.ones(shape=(indexes_combinatons.shape[0], 1), dtype=int)
-        pos_instances = np.append(indexes_combinatons, ones, axis=1)
+        ones = np.ones(shape=(indexes_permutation.shape[0], 1), dtype=int)
+        pos_instances = np.append(indexes_permutation, ones, axis=1)
         for instance in pos_instances:
           positive_data.append(instance)
   
@@ -58,14 +58,15 @@ def generate_positive_data(dataset):
 
 def generate_negative_data(
     dataset,
-    NUM_NEG
+    NUM_NEG,
+    all_neg_combinations=True,
   ):
   """
   adding the negatives.
   we randomly select a number of non-similar places *in the same persistent_cluster* to act as a negative [id1, id2, 0].
   we specifically chose places in the same cluster as they would be more difficult to predict when training on latitude and longitude.
   we define the parameter NUM_NEG or number of negatives instances for every outlet
-  if NUM_NEG < 0, we select all possible combinations from same persistent_cluster (best)
+  if all_neg_combinations==True, we select all possible combinations from same persistent_cluster (best)
   """
   
   negative_data = []
@@ -73,26 +74,26 @@ def generate_negative_data(
   for index, row in dataset.iterrows():
     out1_cluster = row.persistent_cluster
     out1_id_dashmote = row.id_dashmote
-    # look for outlets in the same block as out1
+    # look for outlets in the same persistent_cluster as out1
     ## but that have a different id_dashmote
     same_cluster_different_outlets = dataset[
         (dataset.persistent_cluster == out1_cluster)
         & (dataset.id_dashmote != out1_id_dashmote)
     ]
 
-    # we use all data if NUM_NEG < 0
-    if NUM_NEG < 0:
+    # we use all data if all_neg_combinations==True
+    if all_neg_combinations:
       # we take all the data
       same_cluster_different_outlets = same_cluster_different_outlets.index.to_list()
     else:
-      # we only sample NUM_NEG number of instances
+      # we only sample NUM_NEG number of outlets
       ## sometimes NUM_NEG > len(same_cluster_different_outlets)
       ## so we take the min of the two
-      sample_num = min(NUM_NEG, len(same_cluster_different_outlets))
-      same_cluster_different_outlets = same_cluster_different_outlets.sample(n=sample_num).index.to_list()
+      num_samples = min(NUM_NEG, len(same_cluster_different_outlets))
+      same_cluster_different_outlets = same_cluster_different_outlets.sample(n=num_samples, random_state=0).index.to_list()
 
     for out2_index in same_cluster_different_outlets:
-      #  both (id1 != id2) and (id2 != id1) are correct
+      # both (id1 != id2) and (id2 != id1) are correct
       negative_data.append([index, out2_index, 0])
       negative_data.append([out2_index, index, 0])
       
@@ -101,7 +102,8 @@ def generate_negative_data(
 
 def generate_pair_similarity_dataset(
     dataset, 
-    NUM_NEG=1,
+    NUM_NEG,
+    all_neg_combinations=True,
     save_to=''
   ):
   """
@@ -116,18 +118,19 @@ def generate_pair_similarity_dataset(
   positive_data = generate_positive_data(dataset)
 
   
-  if NUM_NEG >= 0:
-    print(f'Generating negative instances with {NUM_NEG} negative instances for every outlet..')
-  else:
+  if all_neg_combinations:
     print('Generating all possible negative instace combinations of every persistent_cluster')
+  else:
+    print(f'Generating negative instances with {NUM_NEG} negative instances for every outlet..')
   
   if NUM_NEG==0:
     # no need to generate negative data
-    pair_similarity_dataset = positive_data
+    pair_similarity_dataset = np.array(positive_data)
   else:
     negative_data = generate_negative_data(
       dataset,
-      NUM_NEG
+      NUM_NEG,
+      all_neg_combinations=all_neg_combinations,
     )
 
     # combining the positive and negative data to form a pair similarity dataset
@@ -147,6 +150,7 @@ def generate_feature_similarity_dataset(
     dataset,
     features,
     NUM_NEG=1,
+    all_neg_combinations=True,
     save_to=''    
   ):
   """
@@ -159,6 +163,7 @@ def generate_feature_similarity_dataset(
   pair_similarity_dataset = generate_pair_similarity_dataset(
     dataset,
     NUM_NEG,
+    all_neg_combinations=all_neg_combinations,
   )
 
   # we select the desired features

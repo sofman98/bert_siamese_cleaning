@@ -1,12 +1,9 @@
-from pickletools import optimize
-from data_processing.file_management import load_dataset, load_dataset_csv
+from data_processing.file_management import load_dataset_csv
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
-from data_processing.data_processing import process_dataset
 from models.model_building import build_siamese_model
 from models.transfer_learning import load_siamese_model
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import load_model
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
@@ -19,6 +16,9 @@ num_epochs = 100
 training_batch_size = 64
 early_stopping_patience = 20
 save_feature_similarity_dataset_to=''  # no saving if empty
+# path for saving data 
+last_model_save_path = 'results/models/last_trained_model.h5'
+results_save_path = f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name}.csv'
 
 
 # HYPER-PARAMETER RANGES (for tuning)
@@ -31,21 +31,22 @@ if __name__ == "__main__":
   # DATASET PREPARATION
 
   # we load the raw data file
-  # dataset = load_dataset_csv(path = 'datasets/train.csv')
-  # # we generate the feature similarity and save it (feature_set1, feature_set2, similarity)
-  # feature_similarity_dataset = generate_feature_similarity_dataset(
-  #   dataset,
-  #   features=features,
-  #   NUM_NEG=NUM_NEG,
-  #   save_to=save_feature_similarity_dataset_to
-  # )
+  dataset = load_dataset_csv(path = 'datasets/train.csv')
+  # we generate the feature similarity and save it (feature_set1, feature_set2, similarity)
+  feature_similarity_dataset = generate_feature_similarity_dataset(
+    dataset,
+    features=features,
+    NUM_NEG=NUM_NEG,
+    all_neg_combinations=False,
+    save_to=save_feature_similarity_dataset_to
+  )
 
   # ..or directly load a pre-computed feature_dataset this way:
-  feature_similarity_dataset = load_dataset_csv('datasets/entire_feature_similarity_train.csv')
+  # feature_similarity_dataset = load_dataset_csv('datasets/entire_feature_similarity_train.csv')
   # this one above contains all negative instances
   # you can try generating one with diffrent NUM_NEG values
 
-
+  
   # we split the dataset into train and test
   feature_similarity_dataset = feature_similarity_dataset.to_numpy()
   X = feature_similarity_dataset[:, :-1]
@@ -61,7 +62,7 @@ if __name__ == "__main__":
   )
   ## checkpoint
   cp_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath='results/models/last_trained_model.h5',
+    filepath=last_model_save_path,
     save_best_only=True,
     verbose=1,
     monitor='val_loss',
@@ -69,7 +70,7 @@ if __name__ == "__main__":
   )
 
   # create a file for saving the best registered results
-  with open(f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name}.csv', 'w') as file:
+  with open(results_save_path, 'w') as file:
     file.write(f'num_dense_layers,embedding_size,optimizer,loss,{metric_name}\n')
   
 
@@ -99,10 +100,10 @@ if __name__ == "__main__":
 
         # when training is over
         ## load the best weights for this set of hyperparameters
-        model = load_siamese_model('last_trained_model.h5')
+        model = load_siamese_model(last_model_save_path)
         ## calculate the loss & metric score
         loss, metric_score = model.evaluate([X_test[:, :num_features], X_test[:, num_features:]], y_test)
         ## then save the results along with the architecture for later
-        with open(f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name}.csv', 'a') as file:
+        with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
 

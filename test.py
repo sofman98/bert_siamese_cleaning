@@ -1,6 +1,5 @@
 from models.transfer_learning import load_siamese_model
 from data_processing.file_management import load_dataset_csv
-from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 from tensorflow.math import confusion_matrix
 import numpy as np
 import pandas as pd
@@ -20,9 +19,8 @@ if __name__ == "__main__":
 
     # we first load the model and test data
     model = load_siamese_model()
-    test_data = load_dataset_csv('datasets/test.csv')
 
-    # ..or load it if already generated
+    # we load the already generated feature similarity dataset
     test_data = load_dataset_csv('datasets/entire_feature_similarity_test.csv')
 
     # we make our predictions

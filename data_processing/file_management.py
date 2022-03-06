@@ -4,7 +4,7 @@ import pandas as pd
 
 # parquet
 # for loading the dataset
-def load_dataset(path='datasets/cs1_us_outlets.parquet.gzip'):
+def load_dataset_parquet(path='datasets/cs1_us_outlets.parquet.gzip'):
   return pd.read_parquet(path)
 
 # for saving parquet files
