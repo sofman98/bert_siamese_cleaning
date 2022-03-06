@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
-NUM_NEG = 1 # get all possible combinations with -1 (best but very heavy)
+NUM_NEG = 10
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
 features = ['lat', 'lon']   # selected features
