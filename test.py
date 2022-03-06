@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 # some important variables
 features = ['lat', 'lon']
 num_features = len(features)
+path_to_model='results/models/best_model.h5'
+path_to_test_data='datasets/entire_feature_similarity_test.csv'
 
 # model hyper-parameters
 num_dense_layers = 3
@@ -18,10 +20,10 @@ embedding_size = 16
 if __name__ == "__main__":
 
     # we first load the model and test data
-    model = load_siamese_model()
+    model = load_siamese_model(path_to_model)
 
     # we load the already generated feature similarity dataset
-    test_data = load_dataset_csv('datasets/entire_feature_similarity_test.csv')
+    test_data = load_dataset_csv(path_to_test_data)
 
     # we make our predictions
     print('Predicting...')

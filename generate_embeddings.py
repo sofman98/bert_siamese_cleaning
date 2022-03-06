@@ -10,6 +10,8 @@ num_features = len(features)
 # model hyper-parameters
 num_dense_layers = 3
 embedding_size = 16
+path_to_test_dataset = 'datasets/test.csv'
+save_embeddings_to='datasets/test_embeddings.csv'
 
 
 if __name__ == "__main__":
@@ -18,7 +20,7 @@ if __name__ == "__main__":
         num_dense_layers=num_dense_layers,
         embedding_size=embedding_size
     )    
-    test_data = load_dataset_csv('datasets/test.csv')
+    test_data = load_dataset_csv(path_to_test_dataset)
 
     # we process the data which normalizes the features
     test_data = preprocess_dataset(test_data)
@@ -33,5 +35,5 @@ if __name__ == "__main__":
     # saving the embeddings in a CSV file
     embeddings = pd.DataFrame(embeddings)
     print(embeddings)
-    save_csv(embeddings, 'datasets/test_embeddings.csv')
+    save_csv(embeddings, save_embeddings_to)
 
