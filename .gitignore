@@ -3,3 +3,5 @@ datasets/*
 !datasets/cs1_us_outlets.parquet.gzip
 
 results/models/last_trained_model.h5
+data_processing/__pycache__
+models/__pycache__
