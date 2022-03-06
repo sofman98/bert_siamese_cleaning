@@ -1,6 +1,6 @@
 from models.transfer_learning import load_embedding_model
 from data_processing.file_management import load_dataset_csv, save_csv
-from data_processing.generate_similarity_dataset import process_dataset
+from data_processing.generate_similarity_dataset import preprocess_dataset
 import pandas as pd
 
 # some important variables
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     test_data = load_dataset_csv('datasets/test.csv')
 
     # we process the data which normalizes the features
-    test_data = process_dataset(test_data)
+    test_data = preprocess_dataset(test_data)
 
     # we select the desired features and calculate their embedding
     ## we convert to numpy to accelerate the process

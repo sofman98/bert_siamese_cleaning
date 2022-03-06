@@ -27,7 +27,7 @@ def load_embedding_model(
     path_to_siamese='results/models/best_model.h5'
     ):
     """
-    Loads the siamese model and extracting the trained embedding model.
+    Loads the siamese model and extracts the trained embedding model.
     """
     siamese_model = load_siamese_model(path=path_to_siamese)
 
