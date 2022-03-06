@@ -1,2 +1,0 @@
-num_dense_layers,embedding_size,optimizer,loss,accuracy
-5,32,adam,0.6922336220741272,0.5147650837898254
