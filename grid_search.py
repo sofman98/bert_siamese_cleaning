@@ -18,11 +18,6 @@ num_features = len(features)
 num_epochs = 100
 training_batch_size = 64
 early_stopping_patience = 20
-# if you generate feature_similarity_dataset
-# with all possible unique combinations (NUM_NEG=-1)
-# please save it
-# as it takes quite some time to generate
-# save_feature_similarity_dataset_to='datasets/entire_feature_similarity_train.csv' 
 save_feature_similarity_dataset_to=''  # no saving if empty
 
 

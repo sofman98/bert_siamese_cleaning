@@ -9,7 +9,9 @@ def filter_features(
     dataset,
     features=[]
   ):
-  """we filter the dataset according desired features"""
+  """
+  we filter the dataset according desired features
+  """
   # we remove the incorrect feature names
   for index, feature in enumerate(features):
     if feature not in dataset.columns:
@@ -42,27 +44,16 @@ def generate_positive_data(dataset):
   # creating the similarity dataset which would be of the form (id1, id2, 1) 
   positive_data = []
   for indexes in similarity_map.values():
-      # we go twice through the list of similar places to save all the similar ones
-      # example: [5, 6, 7] => [5, 6], [5, 7], [6, 5], [6, 7] ...etc
-      for i in indexes:
-          for j in indexes:
-              if i != j:
-                  positive_data.append([i, j, 1])
-  # creating the similarity dataset which would be of the form (id1, id2, 1) 
-  # positive_data = []
-  # for indexes in similarity_map.values():
-  #     # we get unique combinations
-  #     # example: [5, 6, 7] => [5, 6], [5, 7], [6, 7] ...etc
-  #     if len(indexes) > 1:
-  #       indexes_combinatons = np.array(list(it.combinations(indexes, 2)))
-  #       # we add a (1) to signify similarity
-  #       ones = np.ones(shape=(indexes_combinatons.shape[0], 1), dtype=int)
-  #       pos_instances = np.append(indexes_combinatons, ones, axis=1)
-  #       for instance in pos_instances:
-  #         positive_data.append(instance)
+      # we get unique combinations
+      # example: [5, 6, 7] => [5, 6], [5, 7], [6, 7]
+      if len(indexes) > 1:
+        indexes_combinatons = np.array(list(it.combinations(indexes, 2)))
+        # we add a (1) to signify similarity
+        ones = np.ones(shape=(indexes_combinatons.shape[0], 1), dtype=int)
+        pos_instances = np.append(indexes_combinatons, ones, axis=1)
+        for instance in pos_instances:
+          positive_data.append(instance)
   
-  positive_data = np.array(positive_data)
-  # positive_data.reshape((-1, 3))  
   return positive_data
 
 def generate_negative_data(
@@ -142,14 +133,14 @@ def generate_pair_similarity_dataset(
     pair_similarity_dataset = np.concatenate([positive_data, negative_data], axis = 0)
 
   # converting back to DataFrame
-  pair_similarity_df = pd.DataFrame(data=pair_similarity_dataset, columns=['outlet1', 'outlet2', 'similarity'])
 
   #saving the new generate dataset, if given a path
   if save_to:
+    pair_similarity_df = pd.DataFrame(data=pair_similarity_dataset, columns=['outlet1', 'outlet2', 'similarity'])
     print(f'Saving the pair similarity dataset to {save_to}..')
     save_csv(pair_similarity_df, save_to)
 
-  return pair_similarity_df
+  return pair_similarity_dataset
 
 def generate_feature_similarity_dataset(
     dataset,
@@ -164,28 +155,19 @@ def generate_feature_similarity_dataset(
   NUM_NEG represents the number of negative instances for every outlet
   """
   # we generate a pair similarity dataset (outlet1, outlet2, similarity)
-  pair_similarity_df = generate_pair_similarity_dataset(
+  pair_similarity_dataset = generate_pair_similarity_dataset(
     dataset,
     NUM_NEG,
   )
 
   # we select the desired features
   filtered_dataset = filter_features(dataset, features)
-  # numpy for faster training
-  filtered_dataset_np = filtered_dataset.to_numpy()
+  # we get the feature values for all pairs
+  outlet1 = filtered_dataset.iloc[pair_similarity_dataset[:,0]].to_numpy()
+  outlet2 = filtered_dataset.iloc[pair_similarity_dataset[:,1]].to_numpy()
+  similarity = pair_similarity_dataset[:, -1].reshape((-1, 1))
 
-  # we select the outlet features for each of the outlets (feature_set1, feature_set2, similarity)
-  feature_similarity_dataset = []
-  for index, row in pair_similarity_df.iterrows():
-      # we retrieve the data from the original dataset
-      out1_data = filtered_dataset_np[row.outlet1]
-      out2_data = filtered_dataset_np[row.outlet2]
-
-      # combining the two and appending them to the stack
-      data_instance = list(out1_data) + list(out2_data) + [int(row.similarity)]
-      feature_similarity_dataset.append(data_instance)
-
-  feature_similarity_dataset = np.stack(feature_similarity_dataset)
+  feature_similarity_dataset = np.concatenate([outlet1, outlet2, similarity], axis=1)
 
   #transforming into dataframe
   columns = [ col + f'{i}' for col in list(filtered_dataset.columns) for i in [1, 2]] + ['similarity']
