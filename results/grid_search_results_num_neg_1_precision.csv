@@ -1,2 +1,1 @@
 num_dense_layers,embedding_size,optimizer,loss,precision
-4,16,adam,0.6962945461273193,0.0

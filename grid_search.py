@@ -10,7 +10,7 @@ from tensorflow.keras.models import load_model
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
-NUM_NEG = 10 # balanced if NUM_NEG == 1 | get all possible combinations with -1 (best but very heavy)
+NUM_NEG = 1 # balanced if NUM_NEG == 1 | get all possible combinations with -1 (best but very heavy)
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
 features = ['lat', 'lon']   # selected features
@@ -65,7 +65,7 @@ if __name__ == "__main__":
   )
   ## checkpoint
   cp_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath='last_trained_model.h5',
+    filepath='results/models/last_trained_model.h5',
     save_best_only=True,
     verbose=1,
     monitor=f'val_{metric_name}',
@@ -73,7 +73,7 @@ if __name__ == "__main__":
   )
 
   # create a file for saving the best registered results
-  with open(f'{metric_name}_grid_search_results_num_neg_{NUM_NEG}.csv', 'w') as file:
+  with open(f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name}.csv', 'w') as file:
     file.write(f'num_dense_layers,embedding_size,optimizer,loss,{metric_name}\n')
   
 
@@ -107,6 +107,6 @@ if __name__ == "__main__":
         ## calculate the loss & metric score
         loss, metric_score = model.evaluate([X_test[:, :num_features], X_test[:, num_features:]], y_test)
         ## then save the results along with the architecture for later
-        with open(f'{metric_name}_grid_search_results_num_neg_{NUM_NEG}.csv', 'a') as file:
+        with open(f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name}.csv', 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
 

@@ -14,7 +14,7 @@ def load_siamese_model(
   """
   # default value
   if not path:
-    path = 'models/best_model.h5'
+    path = 'results/models/best_model.h5'
   model = load_model(path, custom_objects={'DifferenceLayer': DifferenceLayer})
   return model
 
@@ -24,7 +24,7 @@ def load_siamese_model(
 def load_embedding_model(
     num_dense_layers,
     embedding_size,
-    path_to_siamese='models/best_model.h5'
+    path_to_siamese='results/models/best_model.h5'
     ):
     """
     Loads the siamese model and extracting the trained embedding model.

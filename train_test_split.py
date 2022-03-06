@@ -10,7 +10,6 @@ if __name__ == "__main__":
     test = dataset.sample(frac=test_frac, random_state=0)
     train = dataset.drop(test.index)
 
-
     # saving the test and train sets
     save_csv(test, 'datasets/test.csv')
     save_csv(train, 'datasets/train.csv')
