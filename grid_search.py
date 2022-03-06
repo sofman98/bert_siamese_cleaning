@@ -10,21 +10,26 @@ from tensorflow.keras.models import load_model
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
-NUM_NEG = 10 #balanced if NUM_NEG == 1 | get all possible combinations with -1 (best but very heavy)
+NUM_NEG = 10 # balanced if NUM_NEG == 1 | get all possible combinations with -1 (best but very heavy)
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
-features = ['lat', 'lon']
+features = ['lat', 'lon']   # selected features
 num_features = len(features)
-save_feature_similarity_dataset_to=''  # no saving if empty
 num_epochs = 100
-training_batch_size = 2048
+training_batch_size = 64
 early_stopping_patience = 20
+# if you generate feature_similarity_dataset
+# with all possible unique combinations (NUM_NEG=-1)
+# please save it
+# as it takes quite some time to generate
+# save_feature_similarity_dataset_to='datasets/entire_feature_similarity_train.csv' 
+save_feature_similarity_dataset_to=''  # no saving if empty
 
 
 # HYPER-PARAMETER RANGES (for tuning)
-range_num_dense_layers = [4, 5, 6] 
-range_embedding_size = [16, 32, 64]
-range_optimizer = ['adam']
+range_num_dense_layers = [3, 4, 5] 
+range_embedding_size = [8, 16, 32]
+range_optimizer = ['sgd']
 
 if __name__ == "__main__":
 
@@ -56,13 +61,14 @@ if __name__ == "__main__":
   es_callback = tf.keras.callbacks.EarlyStopping(
     monitor=f'val_{metric_name}',
     patience=early_stopping_patience,
+    mode='max'
   )
   ## checkpoint
   cp_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath='temp_model_delete_me.h5',
+    filepath='last_trained_model.h5',
     save_best_only=True,
     verbose=1,
-    monitor=f'val_{metric_name}', 
+    monitor=f'val_{metric_name}',
     mode='max'
   )
 
@@ -97,7 +103,7 @@ if __name__ == "__main__":
 
         # when training is over
         ## load the best weights for this set of hyperparameters
-        model = load_siamese_model()
+        model = load_siamese_model('last_trained_model.h5')
         ## calculate the loss & metric score
         loss, metric_score = model.evaluate([X_test[:, :num_features], X_test[:, num_features:]], y_test)
         ## then save the results along with the architecture for later
