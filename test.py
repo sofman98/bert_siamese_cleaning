@@ -22,20 +22,10 @@ if __name__ == "__main__":
     model = load_siamese_model()
     test_data = load_dataset_csv('datasets/test.csv')
 
-    # generate the feature similarity dataset (feature_set1, feature_set2, similarity)
-    # NUM_NEG==-1 which means it includes all possible unique combinations
-    # for negative values (non-similarity)
-    test_data = generate_feature_similarity_dataset(
-        test_data,
-        NUM_NEG=-1,
-        features=features,
-        save_to='datasets/entire_feature_similarity_test.csv'
-    )
     # ..or load it if already generated
-    # test_data = load_dataset_csv('datasets/entire_feature_similarity_test.csv')
+    test_data = load_dataset_csv('datasets/entire_feature_similarity_test.csv')
 
     # we make our predictions
-
     print('Predicting...')
     X = test_data.to_numpy()[:,:-1]
     y = test_data.to_numpy()[:, -1]

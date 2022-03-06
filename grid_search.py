@@ -10,7 +10,7 @@ from tensorflow.keras.models import load_model
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
-NUM_NEG = 1 # balanced if NUM_NEG == 1 | get all possible combinations with -1 (best but very heavy)
+NUM_NEG = 1 # get all possible combinations with -1 (best but very heavy)
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
 features = ['lat', 'lon']   # selected features
@@ -22,28 +22,29 @@ save_feature_similarity_dataset_to=''  # no saving if empty
 
 
 # HYPER-PARAMETER RANGES (for tuning)
-range_num_dense_layers = [3, 4, 5] 
-range_embedding_size = [8, 16, 32]
-range_optimizer = ['sgd']
+range_num_dense_layers = [5] 
+range_embedding_size = [32]
+range_optimizer = ['adam']
 
 if __name__ == "__main__":
 
   # DATASET PREPARATION
 
   # we load the raw data file
-  dataset = load_dataset_csv(path = 'datasets/train.csv')
-  # we generate the feature similarity and save it (feature_set1, feature_set2, similarity)
-  feature_similarity_dataset = generate_feature_similarity_dataset(
-    dataset,
-    features=features,
-    NUM_NEG=NUM_NEG,
-    save_to=save_feature_similarity_dataset_to
-  )
+  # dataset = load_dataset_csv(path = 'datasets/train.csv')
+  # # we generate the feature similarity and save it (feature_set1, feature_set2, similarity)
+  # feature_similarity_dataset = generate_feature_similarity_dataset(
+  #   dataset,
+  #   features=features,
+  #   NUM_NEG=NUM_NEG,
+  #   save_to=save_feature_similarity_dataset_to
+  # )
 
-  ## ..or directly load a pre-computed feature_dataset
-  ## this particular one contains all negative unique combinations which
-  ## you can try generating one with diffrent NUM_NEG values
-  # feature_similarity_dataset = load_dataset_csv('datasets/entire_feature_similarity_train.csv')
+  # ..or directly load a pre-computed feature_dataset this way:
+  feature_similarity_dataset = load_dataset_csv('datasets/entire_feature_similarity_train.csv')
+  # this one above contains all negative instances
+  # you can try generating one with diffrent NUM_NEG values
+
 
   # we split the dataset into train and test
   feature_similarity_dataset = feature_similarity_dataset.to_numpy()
@@ -54,17 +55,17 @@ if __name__ == "__main__":
   # Callbacks
   ## early stopping
   es_callback = tf.keras.callbacks.EarlyStopping(
-    monitor=f'val_{metric_name}',
+    monitor='val_loss',
     patience=early_stopping_patience,
-    mode='max'
+    mode='min'
   )
   ## checkpoint
   cp_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath='results/models/last_trained_model.h5',
     save_best_only=True,
     verbose=1,
-    monitor=f'val_{metric_name}',
-    mode='max'
+    monitor='val_loss',
+    mode='min'
   )
 
   # create a file for saving the best registered results

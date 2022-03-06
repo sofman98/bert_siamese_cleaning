@@ -44,10 +44,10 @@ def generate_positive_data(dataset):
   # creating the similarity dataset which would be of the form (id1, id2, 1) 
   positive_data = []
   for indexes in similarity_map.values():
-      # we get unique combinations
-      # example: [5, 6, 7] => [5, 6], [5, 7], [6, 7]
+      # we get all combinations
+      # example: [5, 6, 7] => [5, 6], [5, 7], [6, 7], [6, 5]..etc
       if len(indexes) > 1:
-        indexes_combinatons = np.array(list(it.combinations(indexes, 2)))
+        indexes_combinatons = np.array(list(it.permutations(indexes, 2)))
         # we add a (1) to signify similarity
         ones = np.ones(shape=(indexes_combinatons.shape[0], 1), dtype=int)
         pos_instances = np.append(indexes_combinatons, ones, axis=1)
@@ -65,10 +65,9 @@ def generate_negative_data(
   we randomly select a number of non-similar places *in the same persistent_cluster* to act as a negative [id1, id2, 0].
   we specifically chose places in the same cluster as they would be more difficult to predict when training on latitude and longitude.
   we define the parameter NUM_NEG or number of negatives instances for every outlet
-  for example, if NUM_NEG=1, then the dataset is balanced, if NUM_NEG=2, then there are twice more negative instances than positive ones
   if NUM_NEG < 0, we select all possible combinations from same persistent_cluster (best)
   """
-
+  
   negative_data = []
   #for every outlet
   for index, row in dataset.iterrows():
@@ -93,7 +92,9 @@ def generate_negative_data(
       same_cluster_different_outlets = same_cluster_different_outlets.sample(n=sample_num).index.to_list()
 
     for out2_index in same_cluster_different_outlets:
+      #  both (id1 != id2) and (id2 != id1) are correct
       negative_data.append([index, out2_index, 0])
+      negative_data.append([out2_index, index, 0])
       
   return negative_data
 
