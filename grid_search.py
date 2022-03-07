@@ -7,7 +7,8 @@ from sklearn.model_selection import train_test_split
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
-NUM_NEG = 10
+NUM_NEG = 10 # number of non-duplicates per outlet, note: 1 duplicates == 2 instances
+all_neg_combinations = True # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
 features = ['lat', 'lon']   # selected features
@@ -29,22 +30,22 @@ range_optimizer = ['adam', 'sgd']
 if __name__ == "__main__":
 
   # DATASET PREPARATION
-
-  # we load the raw data file
-  dataset = load_dataset_csv(path = 'datasets/train.csv')
-  # we generate the feature similarity and save it (feature_set1, feature_set2, similarity)
-  feature_similarity_dataset = generate_feature_similarity_dataset(
-    dataset,
-    features=features,
-    NUM_NEG=NUM_NEG,
-    all_neg_combinations=False,
-    save_to=save_feature_similarity_dataset_to
-  )
-
-  # ..or directly load a pre-computed feature_dataset this way:
-  # feature_similarity_dataset = load_dataset_csv('datasets/entire_feature_similarity_train.csv')
-  # this one above contains all negative instances
-  # you can try generating one with diffrent NUM_NEG values
+  if all_neg_combinations:
+    # ..or directly load a pre-computed feature_dataset this way:
+    feature_similarity_dataset = load_dataset_csv('datasets/entire_feature_similarity_train.csv')
+    # this one above contains all negative instances
+    # you can try generating one with diffrent NUM_NEG values
+  else:
+    # we load the raw data file
+    dataset = load_dataset_csv(path = 'datasets/train.csv')
+    # we generate the feature similarity and save it (feature_set1, feature_set2, similarity)
+    feature_similarity_dataset = generate_feature_similarity_dataset(
+      dataset,
+      features=features,
+      NUM_NEG=NUM_NEG,
+      all_neg_combinations=False,
+      save_to=save_feature_similarity_dataset_to
+    )
 
   
   # we split the dataset into train and test
