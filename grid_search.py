@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
-NUM_NEG = 10 # number of negative instances per outlet
+NUM_NEG = 10 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
 all_neg_combinations = True # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
