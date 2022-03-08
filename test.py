@@ -43,7 +43,6 @@ if __name__ == "__main__":
     ax.set_title('Confusion Matrix\n\n')
     ax.set_xlabel('\nPredicted Values')
     ax.set_ylabel('Actual Values ')
-    ## Ticket labels - List must be in alphabetical order
     ax.xaxis.set_ticklabels(['Negative','Positive'])
     ax.yaxis.set_ticklabels(['Negative','Positive'])
     plt.show()
