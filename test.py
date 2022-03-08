@@ -30,6 +30,7 @@ if __name__ == "__main__":
     X = test_data.to_numpy()[:,:-1]
     y = test_data.to_numpy()[:, -1]
     prediction = model.predict([X[:, num_features:], X[:, :num_features]])
+    prediction = np.round(prediction)
 
     # we calculate the confusion_matrix
     confusion_matrix = confusion_matrix(y, prediction)
