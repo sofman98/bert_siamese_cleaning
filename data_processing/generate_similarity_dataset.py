@@ -74,9 +74,7 @@ def generate_negative_data(
       same_cluster_different_outlets = same_cluster_different_outlets.sample(n=num_samples, random_state=0).index.to_list()
 
     for out2_index in same_cluster_different_outlets:
-      # both (id1 != id2) and (id2 != id1) are correct
       negative_data.append([index, out2_index, 0])
-      negative_data.append([out2_index, index, 0])
       
   return negative_data
 
