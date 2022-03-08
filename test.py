@@ -34,12 +34,12 @@ if __name__ == "__main__":
     prediction = np.round(prediction)
 
     # we calculate the confusion_matrix
-    confusion_matrix = confusion_matrix(y, prediction)
-    confusion_matrix = np.array(confusion_matrix)
+    conf_mat = confusion_matrix(y, prediction)
+    conf_mat = np.array(conf_mat)
 
     # we display the results
-    print('Confusion Matrix:\n',confusion_matrix)
-    ax = sns.heatmap(confusion_matrix, annot=True, cmap='Blues')
+    print('Confusion Matrix:\n',conf_mat)
+    ax = sns.heatmap(conf_mat, annot=True, cmap='Blues')
     ax.set_title('Confusion Matrix\n\n')
     ax.set_xlabel('\nPredicted Values')
     ax.set_ylabel('Actual Values ')
