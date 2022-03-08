@@ -46,16 +46,4 @@ if __name__ == "__main__":
     ax.xaxis.set_ticklabels(['Negative','Positive'])
     ax.yaxis.set_ticklabels(['Negative','Positive'])
     plt.show()
-
-
-        
-
-        
-
-
-
-
-
-
-
-
+    
