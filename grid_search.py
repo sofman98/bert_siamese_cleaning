@@ -46,8 +46,6 @@ if __name__ == "__main__":
       all_neg_combinations=False,
       save_to=save_feature_similarity_dataset_to
     )
-    print(feature_similarity_dataset)
-
   
   # we split the dataset into train and test
   feature_similarity_dataset = feature_similarity_dataset.to_numpy()
