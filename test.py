@@ -23,13 +23,13 @@ if __name__ == "__main__":
     model = load_siamese_model(path_to_model)
 
     # we load the already generated feature similarity dataset
-    test_data = load_dataset_csv(path_to_test_data)
+    test_data = load_dataset_csv(path_to_test_data).to_numpy()
 
     # we make our predictions
     print('Predicting...')
-    X = test_data.to_numpy()[:,:-1]
-    y = test_data.to_numpy()[:, -1]
-    
+    X = test_data[:,:-1]
+    y = test_data[:, -1]
+
     prediction = model.predict([X[:, num_features:], X[:, :num_features]])
     prediction = np.round(prediction)
 
