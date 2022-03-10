@@ -1,7 +1,7 @@
 # dashmote
 dashmote assignment
 
-## Data Processing
+## Data Preprocessing
 First split the dataset into a test-set and a train-set. This command also generates the feature similarity dataset (feature_set1, feature_set2, similarity) for both test and train data. all 4 .csv files will be stored inside the ```datasets/``` directory.
 ```
 $python train_test_split.py
