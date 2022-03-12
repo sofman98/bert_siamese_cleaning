@@ -60,17 +60,17 @@ if __name__ == "__main__":
   # Callbacks
   ## early stopping
   es_callback = tf.keras.callbacks.EarlyStopping(
-    monitor='val_loss',
+    monitor=f'val_{metric_name}',
     patience=early_stopping_patience,
-    mode='min'
+    mode='max'
   )
   ## checkpoint
   cp_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=last_model_save_path,
     save_best_only=True,
     verbose=1,
-    monitor='val_loss',
-    mode='min'
+    monitor=f'val_{metric_name}',
+    mode='max'
   )
 
   # create a file for saving the best registered results
