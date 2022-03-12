@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
         # Siamese model building
         model = build_siamese_model(
-            input_shape=(), #for text
+            inputs_shape=(), #for text
             num_dense_layers=num_dense_layers,
             embedding_size=embedding_size
         )

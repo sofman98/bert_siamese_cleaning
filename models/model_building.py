@@ -22,10 +22,9 @@ def build_text_embedding_model(
   [inputs -> 64 -> 32 -> 8].
   We name the layers for transfer learning. we separate between model A and model B.
   """
-  layer = inputs
   encoder_inputs = preprocessor(inputs)
-  outputs = encoder(encoder_inputs)
-  layer = outputs["pooled_output"]  # this is the resulting latent vector of shape [batch_size, 768]. 
+  encoder_outputs = encoder(encoder_inputs)
+  layer = encoder_outputs["pooled_output"]  # this is the resulting latent vector of shape [batch_size, 768]. 
 
   # we build the network according the number of dense layers and the embedding_size
   for l in range(num_dense_layers,0,-1):
@@ -78,8 +77,8 @@ def build_siamese_model(
   """
 
   # we define the inputs
-  inputs_a = layers.inputs(name="inputs_a", shape = inputs_shape)
-  inputs_b = layers.inputs(name="inputs_b", shape = inputs_shape)
+  inputs_a = layers.Input(name="inputs_a", dtype=tf.string, shape = inputs_shape)
+  inputs_b = layers.Input(name="inputs_b", dtype=tf.string, shape = inputs_shape)
 
   # we define the bert encoder and preprocessor
   version = "http://tfhub.dev/tensorflow/albert_en_preprocess/3"
@@ -88,7 +87,7 @@ def build_siamese_model(
 
   # we add the layer we have created
   differences = DifferenceLayer()(
-      build_embedding_model(
+      build_text_embedding_model(
         inputs_a,
         preprocessor,
         encoder,
@@ -97,7 +96,7 @@ def build_siamese_model(
         name='a',
         )(inputs_a),
 
-      build_embedding_model(
+      build_text_embedding_model(
         inputs_b,
         preprocessor,
         encoder,
