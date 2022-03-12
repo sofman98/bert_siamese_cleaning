@@ -2,9 +2,13 @@ from models.difference_layer import DifferenceLayer
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 from tensorflow.keras.models import Model
+import tensorflow_hub as hub
+import tensorflow_text
 
-def build_embedding_model(
-      input,
+def build_text_embedding_model(
+      inputs,
+      preprocessor,
+      encoder,
       num_dense_layers,
       embedding_size,
       name,
@@ -15,10 +19,40 @@ def build_embedding_model(
   embedding_size represents the number of nodes of the last layer.
   each layer has half the number of nodes of the preceding one.
   example with embedding_size=8 and num_dense_layers=3:
-  [input -> 64 -> 32 -> 8].
+  [inputs -> 64 -> 32 -> 8].
   We name the layers for transfer learning. we separate between model A and model B.
   """
-  layer = input
+  layer = inputs
+  encoder_inputs = preprocessor(inputs)
+  outputs = encoder(encoder_inputs)
+  layer = outputs["pooled_output"]  # this is the resulting latent vector of shape [batch_size, 768]. 
+
+  # we build the network according the number of dense layers and the embedding_size
+  for l in range(num_dense_layers,0,-1):
+    # we add a batchnormalization layer between dense ones
+    layer = layers.BatchNormalization(name=f'batchNorm_{name}{num_dense_layers-l+1}')(layer)
+    # dense layer
+    layer = layers.Dense(embedding_size*(2**(l-1)), activation='relu', name=f'dense_{name}{num_dense_layers-l+1}')(layer)
+
+  outputs = layer
+  return Model(inputs, outputs)
+
+def build_embedding_model(
+    inputs,
+    num_dense_layers,
+    embedding_size,
+    name,
+  ):
+  """
+  One of the submodels that create the embedding FOR TEXTS using a pretrained BERT model.
+  Two of these will be combined to create the siamese model.
+  embedding_size represents the number of nodes of the last layer.
+  each layer has half the number of nodes of the preceding one.
+  example with embedding_size=8 and num_dense_layers=3:
+  [inputs -> 64 -> 32 -> 8].
+  We name the layers for transfer learning. we separate between model A and model B.
+  """
+  layer = inputs
 
   # we build the network according the number of dense layers and the embedding_size
   for l in range(num_dense_layers,0,-1):
@@ -27,11 +61,11 @@ def build_embedding_model(
     if l!=1:  #if not the last layer (embedding)
       layer = layers.BatchNormalization(name=f'batchNorm_{name}{num_dense_layers-l+1}')(layer)
 
-  output = layer
-  return Model(input, output)
+  outputs = layer
+  return Model(inputs, outputs)
 
 def build_siamese_model(
-      input_shape,
+      inputs_shape,
       num_dense_layers,
       embedding_size
     ):
@@ -43,32 +77,41 @@ def build_siamese_model(
   activation to predict the probability of similarity.
   """
 
-  # we define the input
-  input_a = layers.Input(name="input_a", shape = input_shape)
-  input_b = layers.Input(name="input_b", shape = input_shape)
+  # we define the inputs
+  inputs_a = layers.inputs(name="inputs_a", shape = inputs_shape)
+  inputs_b = layers.inputs(name="inputs_b", shape = inputs_shape)
+
+  # we define the bert encoder and preprocessor
+  version = "http://tfhub.dev/tensorflow/albert_en_preprocess/3"
+  preprocessor = hub.KerasLayer(version)
+  encoder = hub.KerasLayer(version, trainable=False)
 
   # we add the layer we have created
   differences = DifferenceLayer()(
       build_embedding_model(
-        input_a,
+        inputs_a,
+        preprocessor,
+        encoder,
         num_dense_layers,
         embedding_size,
         name='a',
-        )(input_a),
+        )(inputs_a),
 
       build_embedding_model(
-        input_b,
+        inputs_b,
+        preprocessor,
+        encoder,
         num_dense_layers,
         embedding_size,
         name='b',
-        )(input_b),
+        )(inputs_b),
   )
   
-  # we add the output layer
-  output = layers.Dense(1, activation="sigmoid", name='output')(differences)
+  # we add the outputs layer
+  outputs = layers.Dense(1, activation="sigmoid", name='outputs')(differences)
 
   siamese_model = Model(
-      inputs=[input_a, input_b], outputs=output
+      inputs=[inputs_a, inputs_b], outputs=outputs
   )
   return siamese_model
 

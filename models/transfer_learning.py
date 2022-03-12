@@ -31,13 +31,13 @@ def load_embedding_model(
     """
     siamese_model = load_siamese_model(path=path_to_siamese)
 
-    # we get the input shape of one submodel from that of the siamese model
-    input_shape = siamese_model.input_shape[0][1:]
-    input_a = layers.Input(name="input_a", shape = input_shape)
+    # we get the inputs shape of one submodel from that of the siamese model
+    inputs_shape = siamese_model.inputs_shape[0][1:]
+    inputs_a = layers.inputs(name="inputs_a", shape = inputs_shape)
 
     # we build the model
     embedding_model = build_embedding_model(
-        input=input_a,
+        inputs=inputs_a,
         num_dense_layers=num_dense_layers,
         embedding_size=embedding_size,
         name='a'

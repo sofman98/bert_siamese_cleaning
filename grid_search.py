@@ -11,7 +11,7 @@ NUM_NEG = 1 # number of negative instances per outlet - Dataset is balanced if N
 all_neg_combinations = False # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
-features = ['lat', 'lon']   # selected features
+features = ['name']   # selected features
 num_features = len(features)
 num_epochs = 100
 training_batch_size = 64
@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
         # Siamese model building
         model = build_siamese_model(
-            input_shape=num_features,
+            input_shape=(), #for text
             num_dense_layers=num_dense_layers,
             embedding_size=embedding_size
         )
