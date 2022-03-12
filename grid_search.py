@@ -4,8 +4,11 @@ from models.model_building import build_siamese_model
 from models.transfer_learning import load_siamese_model
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
-tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
-# tf.config.run_functions_eagerly(True)
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+
+# tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
+tf.config.run_functions_eagerly(True)
 
 # we declare some important variables
 NUM_NEG = 1 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
@@ -15,7 +18,7 @@ metric = tf.keras.metrics.Precision()
 features = ['name']   # selected features
 num_features = len(features)
 num_epochs = 100
-training_batch_size = 64
+training_batch_size = 8 # big batch size might cause ram overload
 early_stopping_patience = 20
 save_feature_similarity_dataset_to=''  # no saving if empty
 # path for saving data 
@@ -24,9 +27,9 @@ results_save_path = f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name
 
 
 # HYPER-PARAMETER RANGES (for tuning)
-range_num_dense_layers = [1, 2, 3] 
-range_embedding_size = [8, 16, 32]
-range_optimizer = ['adam', 'sgd']
+range_num_dense_layers = [0] 
+range_embedding_size = [0]
+range_optimizer = ['adam']
 
 if __name__ == "__main__":
 
@@ -51,7 +54,7 @@ if __name__ == "__main__":
   # we split the dataset into train and test
   feature_similarity_dataset = feature_similarity_dataset.to_numpy(dtype=str)
   X = feature_similarity_dataset[:, :-1]
-  y = feature_similarity_dataset[:, -1]
+  y = feature_similarity_dataset[:, -1].astype(int)
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
 
   # Callbacks
@@ -94,7 +97,7 @@ if __name__ == "__main__":
             [X_train[:, :num_features], X_train[:, num_features:]], y_train, 
             epochs=num_epochs,
             batch_size=training_batch_size,
-            verbose=2,
+            verbose=1,
             validation_data=([X_test[:, :num_features], X_test[:, num_features:]], y_test),
             callbacks=[es_callback, cp_callback]
         )
@@ -107,4 +110,4 @@ if __name__ == "__main__":
         ## then save the results along with the architecture for later
         with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
-          
+

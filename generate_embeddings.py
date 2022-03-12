@@ -4,8 +4,7 @@ from data_processing.generate_similarity_dataset import preprocess_dataset
 import pandas as pd
 
 # some important variables
-features = ['lat', 'lon']
-num_features = len(features)
+features = ['name']
 
 # model hyper-parameters
 num_dense_layers = 3

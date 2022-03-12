@@ -1,7 +1,7 @@
 from data_processing.file_management import load_dataset_csv, load_dataset_parquet, save_csv
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 
-features = ['lat', 'lon']
+features = ['name']
 train_data_save_path = 'datasets/train.csv'
 test_data_save_path = 'datasets/test.csv'
 train_features_save_path = 'datasets/entire_feature_similarity_train.csv'
