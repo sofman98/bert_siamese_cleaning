@@ -15,7 +15,7 @@ def build_embedding_model(
   embedding_size represents the number of nodes of the last layer.
   each layer has half the number of nodes of the preceding one.
   example with embedding_size=8 and num_dense_layers=3:
-  [input -> 64 -> 32 -> 8].
+  [input -> 32 -> 16 -> 8].
   We name the layers for transfer learning. we separate between model A and model B.
   """
   layer = input
