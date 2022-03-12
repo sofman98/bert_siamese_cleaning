@@ -5,6 +5,7 @@ from models.transfer_learning import load_siamese_model
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
+# tf.config.run_functions_eagerly(True)
 
 # we declare some important variables
 NUM_NEG = 1 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     )
   
   # we split the dataset into train and test
-  feature_similarity_dataset = feature_similarity_dataset.to_numpy()
+  feature_similarity_dataset = feature_similarity_dataset.to_numpy(dtype=str)
   X = feature_similarity_dataset[:, :-1]
   y = feature_similarity_dataset[:, -1]
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
@@ -106,4 +107,4 @@ if __name__ == "__main__":
         ## then save the results along with the architecture for later
         with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
-
+          

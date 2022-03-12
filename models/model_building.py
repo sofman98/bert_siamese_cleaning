@@ -32,7 +32,6 @@ def build_text_embedding_model(
     layer = layers.BatchNormalization(name=f'batchNorm_{name}{num_dense_layers-l+1}')(layer)
     # dense layer
     layer = layers.Dense(embedding_size*(2**(l-1)), activation='relu', name=f'dense_{name}{num_dense_layers-l+1}')(layer)
-
   outputs = layer
   return Model(inputs, outputs)
 
@@ -81,9 +80,8 @@ def build_siamese_model(
   inputs_b = layers.Input(name="inputs_b", dtype=tf.string, shape = inputs_shape)
 
   # we define the bert encoder and preprocessor
-  version = "http://tfhub.dev/tensorflow/albert_en_preprocess/3"
-  preprocessor = hub.KerasLayer(version)
-  encoder = hub.KerasLayer(version, trainable=False)
+  preprocessor = hub.KerasLayer("http://tfhub.dev/tensorflow/albert_en_preprocess/3")
+  encoder = hub.KerasLayer("https://tfhub.dev/tensorflow/albert_en_base/3", trainable=False)
 
   # we add the layer we have created
   differences = DifferenceLayer()(
@@ -113,5 +111,3 @@ def build_siamese_model(
       inputs=[inputs_a, inputs_b], outputs=outputs
   )
   return siamese_model
-
-
