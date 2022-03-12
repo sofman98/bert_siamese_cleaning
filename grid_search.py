@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
   # create a file for saving the best registered results
   with open(results_save_path, 'w') as file:
-    file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric_name}")
+    file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric_name}\n")
   
 
   ########   GRID SEARCH   ########

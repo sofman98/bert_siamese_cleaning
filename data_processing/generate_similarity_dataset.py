@@ -6,7 +6,10 @@ from data_processing.data_processing import filter_features
 from data_processing.file_management import save_csv
 import itertools as it
 
-def generate_positive_data(dataset):
+def generate_positive_data(
+    dataset,
+    type
+  ):
   """
   changing dataset into outlet1, outlet2, 1.
   with 1 representing the similarity between outlet1 and outlet2
@@ -82,6 +85,7 @@ def generate_negative_data(
 def generate_pair_similarity_dataset(
     dataset, 
     NUM_NEG,
+    type,
     all_neg_combinations=True,
     save_to=''
   ):
@@ -94,7 +98,10 @@ def generate_pair_similarity_dataset(
 
   print('Generating pair similarity dataset..')
   print('Generating positive instances..')
-  positive_data = generate_positive_data(dataset)
+  positive_data = generate_positive_data(
+    dataset,
+    type
+  )
 
   
   if all_neg_combinations:
@@ -109,7 +116,8 @@ def generate_pair_similarity_dataset(
     negative_data = generate_negative_data(
       dataset,
       NUM_NEG,
-      all_neg_combinations=all_neg_combinations,
+      type,
+      all_neg_combinations,
     )
 
     # combining the positive and negative data to form a pair similarity dataset
@@ -128,7 +136,8 @@ def generate_pair_similarity_dataset(
 def generate_feature_similarity_dataset(
     dataset,
     features,
-    NUM_NEG=1,
+    NUM_NEG,
+    type,
     all_neg_combinations=True,
     save_to=''    
   ):
@@ -142,7 +151,8 @@ def generate_feature_similarity_dataset(
   pair_similarity_dataset = generate_pair_similarity_dataset(
     dataset,
     NUM_NEG,
-    all_neg_combinations=all_neg_combinations,
+    type,
+    all_neg_combinations,
   )
 
   # we select the desired features
