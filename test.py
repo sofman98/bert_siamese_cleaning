@@ -21,11 +21,11 @@ if __name__ == "__main__":
     test_data = load_dataset_csv(path_to_test_data).to_numpy()
 
     # we make our predictions
-    print('Predicting...')
     X = test_data[:,:-1]
     y = test_data[:, -1]
 
-    prediction = model.predict([X[:, num_features:], X[:, :num_features]])
+    print('Predicting...')
+    prediction = model.predict([X[:, :num_features], X[:, num_features:]])
     prediction = np.round(prediction)
 
     # we calculate the confusion_matrix
