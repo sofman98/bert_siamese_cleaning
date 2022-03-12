@@ -2,6 +2,7 @@ from models.model_building import build_embedding_model
 import tensorflow.keras.layers as layers
 from models.difference_layer import DifferenceLayer
 from tensorflow.keras.models import load_model
+import tensorflow_hub as hub
 
 
 # for loading the siamese model
