@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from models.transfer_learning import load_siamese_model
 from data_processing.file_management import load_dataset_csv
 from tensorflow.math import confusion_matrix
@@ -9,7 +10,7 @@ import matplotlib.pyplot as plt
 # some important variables
 features = ['name']
 num_features = len(features)
-path_to_model='results/models/best_model.h5'
+path_to_model='results/models/model_nn1.h5'
 path_to_test_data='datasets/entire_feature_similarity_test.csv'
 
 if __name__ == "__main__":
@@ -25,7 +26,7 @@ if __name__ == "__main__":
     y = test_data[:, -1].astype(int)
 
     print('Predicting...')
-    prediction = model.predict([X[:, :num_features], X[:, num_features:]])
+    prediction = model.predict([X[:, :num_features], X[:, num_features:]], verbose=1)
     prediction = np.round(prediction)
 
     # we calculate the confusion_matrix

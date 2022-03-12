@@ -5,7 +5,8 @@ datasets/*
 # results
 results/models/last_trained_model.h5
 results/*
-!results/models/*
+!results/models/
 # cache
 data_processing/__pycache__
 models/__pycache__
+.vscode/

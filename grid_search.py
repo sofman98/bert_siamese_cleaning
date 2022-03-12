@@ -1,8 +1,10 @@
+from os.path import exists
 from data_processing.file_management import load_dataset_csv
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 from models.model_building import build_siamese_model
 from models.transfer_learning import load_siamese_model
 import tensorflow as tf
+import numpy as np
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
@@ -11,13 +13,13 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 tf.config.run_functions_eagerly(True)
 
 # we declare some important variables
-NUM_NEG = 1 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
+NUM_NEG = 0 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
 all_neg_combinations = False # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
 features = ['name']   # selected features
 num_features = len(features)
-num_epochs = 100
+num_epochs = 1
 training_batch_size = 12 # big batch size might cause ram overload
 early_stopping_patience = 20
 save_feature_similarity_dataset_to=''  # no saving if empty
@@ -74,8 +76,10 @@ if __name__ == "__main__":
   )
 
   # create a file for saving the best registered results
-  with open(results_save_path, 'w') as file:
-    file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric_name}")
+  ## only if file doesn't exist
+  if not exists(results_save_path):
+    with open(results_save_path, 'w') as file:
+        file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric_name}\n")
   
 
   ########   GRID SEARCH   ########
@@ -93,21 +97,20 @@ if __name__ == "__main__":
         model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=[metric])
 
         # Train
-        model.fit(
+        hist = model.fit(
             [X_train[:, :num_features], X_train[:, num_features:]], y_train, 
             epochs=num_epochs,
             batch_size=training_batch_size,
             verbose=1,
-            validation_data=([X_test[:, :num_features], X_test[:, num_features:]], y_test),
+            validation_data=([X_test[:, num_features:], X_test[:, :num_features]], y_test),
             callbacks=[es_callback, cp_callback]
         )
 
         # when training is over
-        ## load the best weights for this set of hyperparameters
-        model = load_siamese_model(last_model_save_path)
-        ## calculate the loss & metric score
-        loss, metric_score = model.evaluate([X_test[:, :num_features], X_test[:, num_features:]], y_test)
+        # we get the epoch with the best metric score
+        best_epoch = np.argmax(hist.history[f'val_{metric_name}'])
+        metric_score = hist.history[f'val_{metric_name}'][best_epoch]
+        loss = hist.history['val_loss'][best_epoch]
         ## then save the results along with the architecture for later
         with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
-
