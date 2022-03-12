@@ -12,11 +12,6 @@ num_features = len(features)
 path_to_model='results/models/best_model.h5'
 path_to_test_data='datasets/entire_feature_similarity_test.csv'
 
-# model hyper-parameters
-num_dense_layers = 3
-embedding_size = 16
-
-
 if __name__ == "__main__":
 
     # we first load the model and test data
