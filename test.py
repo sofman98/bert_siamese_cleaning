@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 # some important variables
 features = ['name']
+num_features = len(features)
 path_to_model='results/models/best_model.h5'
 path_to_test_data='datasets/entire_feature_similarity_test.csv'
 
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     X = test_data[:,:-1]
     y = test_data[:, -1]
 
-    prediction = model.predict([X[:, :1], X[:, 1:]])
+    prediction = model.predict([X[:, :num_features], X[:, num_features:]])
     prediction = np.round(prediction)
 
     # we calculate the confusion_matrix

@@ -15,7 +15,10 @@ def load_siamese_model(
   # default value
   if not path:
     path = 'results/models/best_model.h5'
-  model = load_model(path, custom_objects={'DifferenceLayer': DifferenceLayer})
+  model = load_model(path, custom_objects={
+    'DifferenceLayer': DifferenceLayer,
+    'KerasLayer': hub.KerasLayer
+  })
   return model
 
 

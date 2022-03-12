@@ -18,7 +18,7 @@ metric = tf.keras.metrics.Precision()
 features = ['name']   # selected features
 num_features = len(features)
 num_epochs = 100
-training_batch_size = 8 # big batch size might cause ram overload
+training_batch_size = 12 # big batch size might cause ram overload
 early_stopping_patience = 20
 save_feature_similarity_dataset_to=''  # no saving if empty
 # path for saving data 
