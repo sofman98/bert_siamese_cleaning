@@ -7,8 +7,8 @@ import pandas as pd
 features = ['name']
 
 # model hyper-parameters
-num_dense_layers = 3
-embedding_size = 16
+num_dense_layers = 0
+embedding_size = 0
 path_to_test_dataset = 'datasets/test.csv'
 save_embeddings_to='datasets/test_embeddings.csv'
 
