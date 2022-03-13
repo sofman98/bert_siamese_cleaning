@@ -122,6 +122,9 @@ if __name__ == "__main__":
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
           
         # as the model is very big, we only save the output layer
-        model = load_siamese_model(last_model_save_path)
+        model = load_siamese_model(
+          from_outputs_layer=False,
+          path=last_model_save_path
+        )
         save_outputs_layer(model, outputs_layer_save_path)
 
