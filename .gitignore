@@ -4,6 +4,7 @@ datasets/*
 !datasets/cs1_us_outlets.parquet.gzip
 # results
 results/*
+!results/models/
 !results/outputs_layers/
 # cache
 data_processing/__pycache__
