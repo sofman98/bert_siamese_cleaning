@@ -12,7 +12,7 @@ tf.config.run_functions_eagerly(True) # we need this because of the custom layer
 # we declare some important variables
 NUM_NEG = 1 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
 all_neg_combinations = False # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
-metric_name = 'precision' 
+metric_name = 'precision_1' 
 metric = tf.keras.metrics.Precision()
 features = ['name']   # selected features
 num_features = len(features)
