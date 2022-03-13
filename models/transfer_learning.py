@@ -3,7 +3,7 @@ import tensorflow.keras.layers as layers
 from models.difference_layer import DifferenceLayer
 from tensorflow.keras.models import load_model
 import tensorflow_hub as hub
-
+import numpy as np
 
 # for loading the siamese model
 
@@ -52,3 +52,14 @@ def load_embedding_model(
 
     return embedding_model
 
+def save_outputs_layer(model, name):
+    # we get the last layer's weights and save them
+    outputs_weights = model.layers[-1].get_weights()
+    np.save(name, outputs_weights)
+
+def load_outputs_layer(model, name):
+    #we set the last layer's weights from the saved file
+    outputs_weights = np.load(name,  allow_pickle=True)
+    model.layers[-1].set_weights(outputs_weights)
+
+    return model

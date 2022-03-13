@@ -1,12 +1,12 @@
 from os.path import exists
 from data_processing.file_management import load_dataset_csv
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
+from data_processing.file_management import create_folder
 from models.model_building import build_siamese_model
-from models.transfer_learning import load_siamese_model
+from models.transfer_learning import load_siamese_model, save_outputs_layer
 import tensorflow as tf
 import numpy as np
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 
 # tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
@@ -24,8 +24,9 @@ training_batch_size = 12 # big batch size might cause ram overload
 early_stopping_patience = 20
 save_feature_similarity_dataset_to=''  # no saving if empty
 # path for saving data 
-last_model_save_path = 'results/models/last_trained_model.h5'
 results_save_path = f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name}.csv'
+last_model_save_path = 'results/models/last_trained_model.h5'
+outputs_layer_save_path = 'results/outputs_layers/last_trained_model.npy'
 
 
 # HYPER-PARAMETER RANGES (for tuning)
@@ -74,6 +75,13 @@ if __name__ == "__main__":
     monitor=f'val_{metric_name}',
     mode='max'
   )
+  
+  ######## FILE MANAGEMENT ########
+
+  # we create the folders if they don't exist
+  create_folder(results_save_path)
+  create_folder(last_model_save_path)
+  create_folder(outputs_layer_save_path)
 
   # create a file for saving the best registered results
   ## only if file doesn't exist
@@ -114,3 +122,8 @@ if __name__ == "__main__":
         ## then save the results along with the architecture for later
         with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
+          
+        # as the model is very big, we only save the output layer
+        model = load_siamese_model(last_model_save_path)
+        save_outputs_layer(model, outputs_layer_save_path)
+        
