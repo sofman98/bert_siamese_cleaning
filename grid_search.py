@@ -8,9 +8,7 @@ import tensorflow as tf
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-
-# tf.config.experimental_run_functions_eagerly(True) # we need this because of the custom layer
-tf.config.run_functions_eagerly(True)
+tf.config.run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
 NUM_NEG = 0 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
@@ -126,4 +124,4 @@ if __name__ == "__main__":
         # as the model is very big, we only save the output layer
         model = load_siamese_model(last_model_save_path)
         save_outputs_layer(model, outputs_layer_save_path)
-        
+
