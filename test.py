@@ -1,8 +1,10 @@
 from tabnanny import verbose
 from models.transfer_learning import load_siamese_model
-from data_processing.file_management import load_dataset_csv
+from data_processing.file_management import load_dataset_csv, save_csv
+from data_processing.generate_similarity_dataset import generate_pair_similarity_combinations
 from tensorflow.math import confusion_matrix
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -12,6 +14,8 @@ features = ['name']
 num_features = len(features)
 path_to_outputs_layer='results/outputs_layers/model_nn10.npy'
 path_to_test_data='datasets/entire_feature_similarity_test.csv'
+path_to_raw_test_data='datasets/test.csv'
+save_prediction_to='results/last_prediction.csv'
 
 if __name__ == "__main__":
 
@@ -23,7 +27,6 @@ if __name__ == "__main__":
     
     # we load the already generated feature similarity dataset
     test_data = load_dataset_csv(path_to_test_data).to_numpy(dtype=str)
-
     # we make our predictions
     X = test_data[:,:-1]
     y = test_data[:, -1].astype(int)
@@ -45,4 +48,17 @@ if __name__ == "__main__":
     ax.xaxis.set_ticklabels(['Negative','Positive'])
     ax.yaxis.set_ticklabels(['Negative','Positive'])
     plt.show()
+
+    print('Saving the prediction...')
+    # we first load the raw test set
+    raw_test_data = load_dataset_csv(path_to_raw_test_data)
+    # we generate the (outlet1, outlet2, similarity) dataset
+    pair_similarity_combinations = generate_pair_similarity_combinations(raw_test_data)
+    # we remove the actual similarity
+    pair_similarity_combinations = pair_similarity_combinations[:, :2]
+    # we save the the predictions as (outlet1, outlet2, predicted similarity) 
+    predicted_similarity = np.append(pair_similarity_combinations, prediction, axis=1)
+    predicted_similarity = pd.DataFrame(predicted_similarity, columns=['outlet1', 'outlet2', 'similarity'], dtype=int)
+    save_csv(predicted_similarity, save_prediction_to)
+    print(f'Saved the prediction to {save_prediction_to}')
     
