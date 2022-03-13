@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 features = ['name']
 num_features = len(features)
 path_to_outputs_layer='results/outputs_layers/model_nn10.npy'
-path_to_test_data='datasets/entire_feature_similarity_test.csv'
+path_to_feature_similarity_test_data='datasets/entire_feature_similarity_test.csv'
 path_to_raw_test_data='datasets/test.csv'
 save_prediction_to='results/last_prediction.csv'
 
@@ -26,10 +26,10 @@ if __name__ == "__main__":
     )
     
     # we load the already generated feature similarity dataset
-    test_data = load_dataset_csv(path_to_test_data).to_numpy(dtype=str)
+    feature_similarity_test_data = load_dataset_csv(path_to_feature_similarity_test_data).to_numpy(dtype=str)
     # we make our predictions
-    X = test_data[:,:-1]
-    y = test_data[:, -1].astype(int)
+    X = feature_similarity_test_data[:,:-1]
+    y = feature_similarity_test_data[:, -1].astype(int)
 
     print('Predicting...')
     prediction = model.predict([X[:, :num_features], X[:, num_features:]], verbose=1)

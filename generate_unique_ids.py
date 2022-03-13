@@ -48,7 +48,6 @@ if __name__ == "__main__":
     counter+=1
 
   id_dashmotes = pd.DataFrame(id_dashmotes, columns=['predicted_id_dashmote'], dtype=int)
-  print(id_dashmotes)
   modified_test_data = pd.concat([test, id_dashmotes], axis=1)
   save_csv(modified_test_data, save_resulting_test_data_to)
   print(f'results saved in {save_resulting_test_data_to}')
