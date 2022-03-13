@@ -29,9 +29,13 @@ if __name__ == "__main__":
     # next we generate the feature similarity dataset (feature_set1, feature_set2, similarity)
     # all_neg_combinations=True, which means it includes all possible combinations 
     # in a same persistent_cluster for negative values (non-similarity)
+    # we select all possible permutations for the training
+    # and all unique combinations for the test
 
     _ = generate_feature_similarity_dataset(
         train,
+        kind='permutations',
+        NUM_NEG=None,
         features=features,
         all_neg_combinations=True,
         save_to=train_features_save_path
@@ -39,6 +43,8 @@ if __name__ == "__main__":
 
     _ = generate_feature_similarity_dataset(
         test,
+        kind='combinations',
+        NUM_NEG=None,
         features=features,
         all_neg_combinations=True,
         save_to=test_features_save_path

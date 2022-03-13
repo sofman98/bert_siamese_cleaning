@@ -79,7 +79,7 @@ def generate_negative_data(
   return negative_data
 
 
-def generate_pair_similarity_dataset(
+def generate_pair_similarity_permutations(
     dataset, 
     NUM_NEG,
     all_neg_combinations=True,
@@ -125,10 +125,42 @@ def generate_pair_similarity_dataset(
 
   return pair_similarity_dataset
 
+
+def generate_pair_similarity_combinations(dataset):
+  """
+  Selects all unique combinations rather than permutations.
+  """
+  # we select all unique clusters
+  unique_clusters = dataset.persistent_cluster.unique()
+
+  pair_similairty_dataset = []
+  # for each persistent_cluster
+  for cluster in unique_clusters:
+    # get all indexes
+    cluster_outlets = dataset[dataset.persistent_cluster == cluster].index
+    # find all combinations
+    indexes_combinations = list(it.combinations(cluster_outlets, 2))
+    pair_similairty_dataset += indexes_combinations
+
+  pair_similairty_dataset = np.array(pair_similairty_dataset)
+  # we select the indexes
+  outlets_1 = pair_similairty_dataset[:,0]
+  outlets_2 = pair_similairty_dataset[:,1]
+  # we select their id_dashmote
+  outlets_1_id_dashmote = dataset.iloc[outlets_1].id_dashmote.to_numpy()
+  outlets_2_id_dashmote = dataset.iloc[outlets_2].id_dashmote.to_numpy()
+  # we compare the id_dashmote, 1 if similar, 0 if different
+  similarity = np.array(outlets_1_id_dashmote == outlets_2_id_dashmote, dtype=int).reshape(-1,1)
+  pair_similairty_dataset = np.append(pair_similairty_dataset, similarity, axis=1)
+
+  return pair_similairty_dataset
+
+
 def generate_feature_similarity_dataset(
     dataset,
     features,
-    NUM_NEG=1,
+    NUM_NEG,
+    kind,
     all_neg_combinations=True,
     save_to=''    
   ):
@@ -139,12 +171,15 @@ def generate_feature_similarity_dataset(
   NUM_NEG represents the number of negative instances for every outlet
   """
   # we generate a pair similarity dataset (outlet1, outlet2, similarity)
-  pair_similarity_dataset = generate_pair_similarity_dataset(
-    dataset,
-    NUM_NEG,
-    all_neg_combinations=all_neg_combinations,
-  )
-
+  if kind=='permuations':
+    pair_similarity_dataset = generate_pair_similarity_permutations(
+      dataset,
+      NUM_NEG,
+      all_neg_combinations=all_neg_combinations,
+    )
+  else:
+    pair_similarity_dataset = generate_pair_similarity_combinations(dataset)
+    
   # we select the desired features
   filtered_dataset = filter_features(dataset, features)
   # we get the feature values for all pairs

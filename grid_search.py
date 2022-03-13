@@ -46,6 +46,7 @@ if __name__ == "__main__":
     # we generate the feature similarity and save it (feature_set1, feature_set2, similarity)
     feature_similarity_dataset = generate_feature_similarity_dataset(
       dataset,
+      kind='permutations',
       features=features,
       NUM_NEG=NUM_NEG,
       all_neg_combinations=False,
