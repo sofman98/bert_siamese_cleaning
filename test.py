@@ -1,6 +1,6 @@
 from tabnanny import verbose
 from models.transfer_learning import load_siamese_model
-from data_processing.file_management import load_dataset_csv, save_csv
+from data_processing.file_management import load_dataset_csv, save_csv, create_folder
 from data_processing.generate_similarity_dataset import generate_entire_pair_similarity
 from tensorflow.math import confusion_matrix
 import numpy as np
@@ -15,7 +15,7 @@ num_features = len(features)
 path_to_outputs_layer='results/outputs_layers/model_nn10.npy'
 path_to_feature_similarity_test_data='datasets/entire_feature_similarity_test.csv'
 path_to_raw_test_data='datasets/test.csv'
-save_prediction_to='results/last_prediction.csv'
+save_prediction_to='results/predictions/last_prediction.csv'
 
 if __name__ == "__main__":
 
@@ -60,6 +60,7 @@ if __name__ == "__main__":
     # we save the the predictions as (outlet1, outlet2, predicted similarity) 
     predicted_similarity = np.append(pair_similarity_combinations, prediction, axis=1)
     predicted_similarity = pd.DataFrame(predicted_similarity, columns=['outlet1', 'outlet2', 'similarity'], dtype=int)
+    create_folder(save_prediction_to)
     save_csv(predicted_similarity, save_prediction_to)
     print(f'Saved the prediction to {save_prediction_to}')
     

@@ -21,7 +21,7 @@ training_batch_size = 12 # big batch size might cause ram overload
 early_stopping_patience = 20
 save_feature_similarity_dataset_to=''  # no saving if empty
 # path for saving data 
-results_save_path = f'results/grid_search_results_num_neg_{NUM_NEG}_{metric_name}.csv'
+results_save_path = f'results/grid_search_results/num_neg_{NUM_NEG}_{metric_name}.csv'
 last_model_save_path = 'results/models/last_trained_model.h5'
 outputs_layer_save_path = 'results/outputs_layers/last_trained_model.npy'
 

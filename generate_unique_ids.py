@@ -1,4 +1,4 @@
-from data_processing.file_management import save_csv
+from data_processing.file_management import save_csv, create_folder
 import pandas as pd
 import numpy as np
 
@@ -6,7 +6,7 @@ from data_processing.file_management import load_dataset_csv, save_csv
 
 path_to_predction = 'results/last_prediction.csv'
 path_to_raw_test_data = 'datasets/test.csv'
-save_resulting_test_data_to = 'results/predicted_id_dashmote.csv'
+save_resulting_test_data_to = 'results/unique_ids/predicted_id_dashmote.csv'
 similarity_threshold = 0.5
 
 if __name__ == "__main__":
@@ -49,5 +49,6 @@ if __name__ == "__main__":
 
   id_dashmotes = pd.DataFrame(id_dashmotes, columns=['predicted_id_dashmote'], dtype=int)
   modified_test_data = pd.concat([test, id_dashmotes], axis=1)
+  create_folder(save_resulting_test_data_to)
   save_csv(modified_test_data, save_resulting_test_data_to)
   print(f'results saved in {save_resulting_test_data_to}')
