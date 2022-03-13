@@ -1,7 +1,6 @@
 from os.path import exists
-from data_processing.file_management import load_dataset_csv
+from data_processing.file_management import load_dataset_csv, create_folder
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
-from data_processing.file_management import create_folder
 from models.model_building import build_siamese_model
 from models.transfer_learning import load_siamese_model, save_outputs_layer
 import tensorflow as tf
@@ -11,7 +10,7 @@ from sklearn.model_selection import train_test_split
 tf.config.run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
-NUM_NEG = 0 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
+NUM_NEG = 1 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
 all_neg_combinations = False # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()

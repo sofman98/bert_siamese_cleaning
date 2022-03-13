@@ -10,7 +10,9 @@ import tensorflow as tf
 
 def load_siamese_model(
     from_outputs_layer,
-    path=''
+    path='',
+    optimizer='adam',
+    metric=tf.keras.metrics.Precision()
   ):
   """
   For loading the model while indicating the custom layer we made.
@@ -26,7 +28,7 @@ def load_siamese_model(
       num_dense_layers=0,
       embedding_size=0
     )
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[tf.keras.metrics.Precision()])
+    model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=[metric])
     # then load the outputs layer into it
     model = load_outputs_layer(model, path)
 
