@@ -8,7 +8,6 @@ import itertools as it
 
 def generate_positive_data(
     dataset,
-    type
   ):
   """
   changing dataset into outlet1, outlet2, 1.
@@ -85,7 +84,6 @@ def generate_negative_data(
 def generate_pair_similarity_dataset(
     dataset, 
     NUM_NEG,
-    type,
     all_neg_combinations=True,
     save_to=''
   ):
@@ -100,7 +98,6 @@ def generate_pair_similarity_dataset(
   print('Generating positive instances..')
   positive_data = generate_positive_data(
     dataset,
-    type
   )
 
   
@@ -116,7 +113,6 @@ def generate_pair_similarity_dataset(
     negative_data = generate_negative_data(
       dataset,
       NUM_NEG,
-      type,
       all_neg_combinations,
     )
 
@@ -137,7 +133,6 @@ def generate_feature_similarity_dataset(
     dataset,
     features,
     NUM_NEG,
-    type,
     all_neg_combinations=True,
     save_to=''    
   ):
@@ -151,7 +146,6 @@ def generate_feature_similarity_dataset(
   pair_similarity_dataset = generate_pair_similarity_dataset(
     dataset,
     NUM_NEG,
-    type,
     all_neg_combinations,
   )
 
