@@ -121,12 +121,13 @@ if __name__ == "__main__":
         ## then save the results along with the architecture for later
         with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
-          
-        # as the model is very big, we save the output layer
-        # you can delete the fully saved model if you don't need it
-        model = load_siamese_model(
-          from_outputs_layer=False,
-          path=last_model_save_path
-        )
-        save_outputs_layer(model, outputs_layer_save_path)
+        
+        if num_dense_layers==0 and embedding_size==0:
+          # as the model is very big, we save the output layer
+          # you can delete the fully saved model if you don't need it
+          model = load_siamese_model(
+            from_outputs_layer=False,
+            path=last_model_save_path
+          )
+          save_outputs_layer(model, outputs_layer_save_path)
 

@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 features = ['name']
 num_features = len(features)
 path_to_outputs_layer='results/outputs_layers/model_nn10.npy'
+from_outputs_layer=True
 path_to_feature_similarity_test_data='datasets/entire_feature_similarity_test.csv'
 path_to_raw_test_data='datasets/test.csv'
 save_prediction_to='results/predictions/last_prediction.csv'
@@ -21,7 +22,7 @@ if __name__ == "__main__":
 
     # we first load the model and test data
     model = load_siamese_model(
-      from_outputs_layer=True, 
+      from_outputs_layer=from_outputs_layer, 
       path=path_to_outputs_layer
     )
     
