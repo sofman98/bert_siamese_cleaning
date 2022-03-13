@@ -29,5 +29,5 @@ Running the command also saves the predictions in ```results/predictions/last_pr
 ## Generating unique IDs
 After running the previous command and saving the predictions, you can use them to detect duplicates in the database and give them a same ```predicted_id_dashmote```. the resulting data will be stored in ```results/unique_ids/predicted_id_dashmote.csv```.
 ```
-$python generate_embeddings.py
+$python generate_unique_ids.py
 ```
