@@ -28,6 +28,7 @@ outputs_layer_save_path = 'results/outputs_layers/last_trained_model.npy'
 
 
 # HYPER-PARAMETER RANGES (for tuning)
+# if you use different values than 0, you need to load your entire model when testing
 range_num_dense_layers = [0] 
 range_embedding_size = [0]
 range_optimizer = ['adam']
