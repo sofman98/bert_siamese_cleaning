@@ -14,6 +14,8 @@ def load_siamese_model(
   ):
   """
   For loading the model while indicating the custom layer we made.
+  from_outputs_layer=True means we only load the output layer, present by default in results/outputs_layers.
+  from_outputs_layer=False means we load the entire model
   """
   if from_outputs_layer:
     if not path:
