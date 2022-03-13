@@ -33,6 +33,7 @@ if __name__ == "__main__":
     _ = generate_feature_similarity_dataset(
         train,
         features=features,
+        NUM_NEG=None,
         all_neg_combinations=True,
         save_to=train_features_save_path
     )
@@ -40,6 +41,7 @@ if __name__ == "__main__":
     _ = generate_feature_similarity_dataset(
         test,
         features=features,
+        NUM_NEG=None,
         all_neg_combinations=True,
         save_to=test_features_save_path
     )
