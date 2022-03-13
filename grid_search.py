@@ -11,7 +11,7 @@ tf.config.run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
 NUM_NEG = 1 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
-all_neg_combinations = False # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
+max_neg = False # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
 metric_name = 'precision_1' 
 metric = tf.keras.metrics.Precision()
 features = ['name']   # selected features
@@ -35,7 +35,7 @@ range_optimizer = ['adam']
 if __name__ == "__main__":
 
   # DATASET PREPARATION
-  if all_neg_combinations:
+  if max_neg:
     # ..or directly load a pre-computed feature_dataset this way:
     feature_similarity_dataset = load_dataset_csv('datasets/entire_feature_similarity_train.csv')
     # this one above contains all negative instances
@@ -49,7 +49,7 @@ if __name__ == "__main__":
       kind='permutations',
       features=features,
       NUM_NEG=NUM_NEG,
-      all_neg_combinations=False,
+      max_neg=False,
       save_to=save_feature_similarity_dataset_to
     )
   

@@ -27,7 +27,7 @@ if __name__ == "__main__":
     save_csv(test, test_data_save_path)
 
     # next we generate the feature similarity dataset (feature_set1, feature_set2, similarity)
-    # all_neg_combinations=True, which means it includes all possible combinations 
+    # max_neg=True, which means it includes all possible combinations 
     # in a same persistent_cluster for negative values (non-similarity)
     # we select all possible permutations for the training
     # and all unique combinations for the test
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         kind='permutations',
         NUM_NEG=None,
         features=features,
-        all_neg_combinations=True,
+        max_neg=True,
         save_to=train_features_save_path
     )
 
@@ -46,6 +46,6 @@ if __name__ == "__main__":
         kind='combinations',
         NUM_NEG=None,
         features=features,
-        all_neg_combinations=True,
+        max_neg=True,
         save_to=test_features_save_path
     )

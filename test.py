@@ -1,7 +1,7 @@
 from tabnanny import verbose
 from models.transfer_learning import load_siamese_model
 from data_processing.file_management import load_dataset_csv, save_csv
-from data_processing.generate_similarity_dataset import generate_pair_similarity_combinations
+from data_processing.generate_similarity_dataset import generate_entire_pair_similarity
 from tensorflow.math import confusion_matrix
 import numpy as np
 import pandas as pd
@@ -26,6 +26,7 @@ if __name__ == "__main__":
     )
     
     # we load the already generated feature similarity dataset
+    # if not, run train_test_split.py
     feature_similarity_test_data = load_dataset_csv(path_to_feature_similarity_test_data).to_numpy(dtype=str)
     # we make our predictions
     X = feature_similarity_test_data[:,:-1]
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     # we first load the raw test set
     raw_test_data = load_dataset_csv(path_to_raw_test_data)
     # we generate the (outlet1, outlet2, similarity) dataset
-    pair_similarity_combinations = generate_pair_similarity_combinations(raw_test_data)
+    pair_similarity_combinations = generate_entire_pair_similarity(raw_test_data, 'combinations')
     # we remove the actual similarity
     pair_similarity_combinations = pair_similarity_combinations[:, :2]
     # we save the the predictions as (outlet1, outlet2, predicted similarity) 
