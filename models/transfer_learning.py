@@ -62,7 +62,7 @@ def load_text_embedding_model(
   inputs_a = layers.inputs(name="inputs_a", shape = inputs_shape)
 
   # we build the model
-  embedding_model = build_text_text_embedding_model(
+  embedding_model = build_text_embedding_model(
       inputs=inputs_a,
       num_dense_layers=num_dense_layers,
       embedding_size=embedding_size,

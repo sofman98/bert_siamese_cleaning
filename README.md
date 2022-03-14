@@ -7,6 +7,14 @@ First split the dataset into a test-set and a train-set. This command also gener
 $python train_test_split.py
 ```
 
+### Bonus: Generate and store word embeddings
+As the training takes a lot of time, you can directly compute word embeddings for the outlets' names by running the following command:
+```
+$python generate_embeddings.py
+```
+The embeddings will be stored in ```datasets/embeddings.npy```. You can then train a smaller model to process them.
+The code for training on them is coming soon!
+
 ## Training
 You can run the following command to do a grid search to look for the best combinations of hyper-parameters of the model. Feel free to open the file and change the hyper-parameters' ranges!
 ```
@@ -21,7 +29,7 @@ As the model is very big, if you set ```num_dense_layers``` to 0, you can save t
 
 If you want to convert all of the models inside your model saving directory into outputs layer weight files, you can run the following command:
 ```
-$ python save_outputs_layers.py
+$python save_outputs_layers.py
 ```
 By default, it loads models from ```results/models``` and saves their outputs layer to ```results/outputs_layers```, you can change that my modifying ```models_dir_path``` and ```outputs_save_path```.
 
