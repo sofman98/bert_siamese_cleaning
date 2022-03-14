@@ -122,7 +122,7 @@ if __name__ == "__main__":
         with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
         
-        if num_dense_layers==0 and embedding_size==0:
+        if num_dense_layers==0:
           # as the model is very big, we save the output layer
           # you can delete the fully saved model if you don't need it
           model = load_siamese_model(
