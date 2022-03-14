@@ -19,7 +19,7 @@ You can modify 3 hyper-parameters, the number of dense hidden layers (range_num_
 
 As the model is very big, if you set ```num_dense_layers``` to 0, you can save the outputs layer's weights only rather than the entire model, the weights will be saved inside ```results/outputs_layers/last_trained_model.npy```. If you did not, you will have to load your entire model when testing.
 
-If you want to convert all of the models inside your model saving directory into output layer weight files, you can run the following command:
+If you want to convert all of the models inside your model saving directory into outputs layer weight files, you can run the following command:
 ```
 $ python save_outputs_layers.py
 ```
@@ -30,7 +30,7 @@ Test the model by running the following command. By default, it loads the last l
 ```
 $python test.py
 ```
-Running the command also saves the predictions in ```results/predictions/last_prediction.csv```.
+Running the command also saves the predictions in ```results/predictions/last_prediction.csv```, you can change that by modifying ```save_prediction_to```.
 
 ## Generating unique IDs
 After running the previous command and saving the predictions, you can use them to detect duplicates in the database and give them a same ```predicted_id_dashmote```. the resulting data will be stored in ```results/unique_ids/predicted_id_dashmote.csv```.
