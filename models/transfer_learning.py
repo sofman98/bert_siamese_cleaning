@@ -1,5 +1,5 @@
 from data_processing.file_management import create_folder
-from models.model_building import build_embedding_model, build_siamese_model
+from models.model_building import build_text_embedding_model, build_siamese_model
 import tensorflow.keras.layers as layers
 from models.difference_layer import DifferenceLayer
 from tensorflow.keras.models import load_model
@@ -46,7 +46,7 @@ def load_siamese_model(
 
 # for loading a submodel
 
-def load_embedding_model(
+def load_text_embedding_model(
   num_dense_layers,
   embedding_size,
   from_outputs_layer,
@@ -62,7 +62,7 @@ def load_embedding_model(
   inputs_a = layers.inputs(name="inputs_a", shape = inputs_shape)
 
   # we build the model
-  embedding_model = build_embedding_model(
+  embedding_model = build_text_text_embedding_model(
       inputs=inputs_a,
       num_dense_layers=num_dense_layers,
       embedding_size=embedding_size,
