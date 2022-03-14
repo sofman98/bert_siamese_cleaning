@@ -95,22 +95,10 @@ def generate_pair_similarity_num_neg(
   
   print(f'Generating negative instances with {NUM_NEG} negative instances for every outlet..')
   
-<<<<<<< HEAD
   negative_data = generate_negative_data(
     dataset,
     NUM_NEG,
   )
-=======
-  if NUM_NEG==0:
-    # no need to generate negative data
-    pair_similarity_dataset = np.array(positive_data)
-  else:
-    negative_data = generate_negative_data(
-      dataset,
-      NUM_NEG,
-      all_neg_combinations,
-    )
->>>>>>> main
 
   # combining the positive and negative data to form a pair similarity dataset
   pair_similarity_dataset = np.concatenate([positive_data, negative_data], axis = 0)
@@ -166,12 +154,8 @@ def generate_feature_similarity_dataset(
     dataset,
     features,
     NUM_NEG,
-<<<<<<< HEAD
     kind,
     max_neg=True,
-=======
-    all_neg_combinations=True,
->>>>>>> main
     save_to=''    
   ):
   """
@@ -181,20 +165,11 @@ def generate_feature_similarity_dataset(
   NUM_NEG represents the number of negative instances for every outlet
   """
   # we generate a pair similarity dataset (outlet1, outlet2, similarity)
-<<<<<<< HEAD
   if max_neg:
     pair_similarity_dataset = generate_entire_pair_similarity(dataset, kind)
   else:
     pair_similarity_dataset = generate_pair_similarity_num_neg(dataset, NUM_NEG) # kind is permutations by default
     
-=======
-  pair_similarity_dataset = generate_pair_similarity_dataset(
-    dataset,
-    NUM_NEG,
-    all_neg_combinations,
-  )
-
->>>>>>> main
   # we select the desired features
   filtered_dataset = filter_features(dataset, features)
   # we get the feature values for all pairs
