@@ -6,6 +6,7 @@ datasets/*
 results/*
 !results/models/
 !results/outputs_layers/
+!results/predictions/
 # cache
 data_processing/__pycache__
 models/__pycache__

@@ -33,7 +33,7 @@ $python test.py
 Running the command also saves the predictions in ```results/predictions/last_prediction.csv```, you can change that by modifying ```save_prediction_to```.
 
 ## Generating unique IDs
-After running the previous command and saving the predictions, you can use them to detect duplicates in the database and give them a same ```predicted_id_dashmote```. the resulting data will be stored in ```results/unique_ids/predicted_id_dashmote.csv```.
+After running the previous command and saving the predictions, you can use them to detect duplicates in the database and give them a same ```predicted_id_dashmote```. By default, the predictions present in ```results/predictions/nn10_prediction.csv``` is used. The resulting data will be stored in ```results/unique_ids/predicted_id_dashmote.csv```.
 ```
 $python generate_unique_ids.py
 ```
