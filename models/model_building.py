@@ -7,6 +7,7 @@ import tensorflow_text
 
 def build_text_embedding_model(
       inputs,
+      use_encoder,
       preprocessor,
       encoder,
       num_dense_layers,
@@ -22,9 +23,12 @@ def build_text_embedding_model(
   [inputs -> 32 -> 16 -> 8].
   We name the layers for transfer learning. we separate between model A and model B.
   """
-  encoder_inputs = preprocessor(inputs)
-  encoder_outputs = encoder(encoder_inputs)
-  layer = encoder_outputs["pooled_output"]  # this is the resulting latent vector of shape [batch_size, 768]. 
+  if use_encoder:
+    encoder_inputs = preprocessor(inputs)
+    encoder_outputs = encoder(encoder_inputs)
+    layer = encoder_outputs["pooled_output"]  # this is the resulting latent vector of shape [batch_size, 768]. 
+  else:
+    layer = inputs
 
   # we build the network according the number of dense layers and the embedding_size
   for l in range(num_dense_layers,0,-1):
@@ -35,37 +39,12 @@ def build_text_embedding_model(
   outputs = layer
   return Model(inputs, outputs)
 
-def build_embedding_model(
-    inputs,
-    num_dense_layers,
-    embedding_size,
-    name,
-  ):
-  """
-  One of the submodels that create the embedding FOR TEXTS using a pretrained BERT model.
-  Two of these will be combined to create the siamese model.
-  embedding_size represents the number of nodes of the last layer.
-  each layer has half the number of nodes of the preceding one.
-  example with embedding_size=8 and num_dense_layers=3:
-  [inputs -> 64 -> 32 -> 8].
-  We name the layers for transfer learning. we separate between model A and model B.
-  """
-  layer = inputs
-
-  # we build the network according the number of dense layers and the embedding_size
-  for l in range(num_dense_layers,0,-1):
-    layer = layers.Dense(embedding_size*(2**(l-1)), activation='relu', name=f'dense_{name}{num_dense_layers-l+1}')(layer)
-    # we add a batchnormalization layer between dense ones
-    if l!=1:  #if not the last layer (embedding)
-      layer = layers.BatchNormalization(name=f'batchNorm_{name}{num_dense_layers-l+1}')(layer)
-
-  outputs = layer
-  return Model(inputs, outputs)
 
 def build_siamese_model(
       inputs_shape,
       num_dense_layers,
-      embedding_size
+      embedding_size,
+      use_encoder=False,
     ):
   """
   The final siamese model.
@@ -87,6 +66,7 @@ def build_siamese_model(
   differences = DifferenceLayer()(
       build_text_embedding_model(
         inputs_a,
+        use_encoder,
         preprocessor,
         encoder,
         num_dense_layers,
@@ -96,6 +76,7 @@ def build_siamese_model(
 
       build_text_embedding_model(
         inputs_b,
+        use_encoder,
         preprocessor,
         encoder,
         num_dense_layers,

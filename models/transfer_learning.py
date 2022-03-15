@@ -11,36 +11,19 @@ import tensorflow as tf
 # for loading the siamese model
 
 def load_siamese_model(
-    from_outputs_layer,
     path='',
     optimizer='adam',
     metric=tf.keras.metrics.Precision()
   ):
   """
   For loading the model while indicating the custom layer we made.
-  from_outputs_layer=True means we only load the output layer, present by default in results/outputs_layers.
-  from_outputs_layer=False means we load the entire model
   """
-  if from_outputs_layer:
-    if not path:
-      path = 'results/outputs_layers/best_model.npy'
-    # we build the model
-    model = build_siamese_model(
-      inputs_shape=(),
-      num_dense_layers=0,
-      embedding_size=0
-    )
-    model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=[metric])
-    # then load the outputs layer into it
-    model = load_outputs_layer(model, path)
-
-  else:
-    if not path:
-      path = 'results/models/best_model.h5'
-    model = load_model(path, custom_objects={
-      'DifferenceLayer': DifferenceLayer,
-      'KerasLayer': hub.KerasLayer
-    })
+  if not path:
+    path = 'results/models/best_model.h5'
+  model = load_model(path, custom_objects={
+    'DifferenceLayer': DifferenceLayer,
+    'KerasLayer': hub.KerasLayer
+  })
   return model
 
 
@@ -50,7 +33,8 @@ def load_text_embedding_model(
   num_dense_layers,
   embedding_size,
   from_outputs_layer,
-  path_to_siamese='results/models/best_model.h5'
+  use_encoder,
+  path_to_siamese,
   ):
   """
   Loads the siamese model and extracts the trained embedding model.
@@ -64,6 +48,7 @@ def load_text_embedding_model(
   # we build the model
   embedding_model = build_text_embedding_model(
       inputs=inputs_a,
+      use_encoder=use_encoder,
       num_dense_layers=num_dense_layers,
       embedding_size=embedding_size,
       name='a'
@@ -73,16 +58,3 @@ def load_text_embedding_model(
   embedding_model.load_weights(path_to_siamese, by_name=True)
 
   return embedding_model
-
-def save_outputs_layer(model, name):
-  # we get the last layer's weights and save them
-  outputs_weights = model.layers[-1].get_weights()
-  create_folder(name)
-  np.save(name, outputs_weights)
-
-def load_outputs_layer(model, name):
-  #we set the last layer's weights from the saved file
-  outputs_weights = np.load(name,  allow_pickle=True)
-  model.layers[-1].set_weights(outputs_weights)
-
-  return model
