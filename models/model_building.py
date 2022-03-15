@@ -8,11 +8,11 @@ import tensorflow_text
 def build_text_embedding_model(
       inputs,
       use_encoder,
-      preprocessor,
-      encoder,
       num_dense_layers,
       embedding_size,
       name,
+      preprocessor=None,
+      encoder=None,
     ):
   """
   One of the submodels that create the embedding.

@@ -1,16 +1,26 @@
 from data_processing.file_management import load_dataset_csv, load_dataset_parquet, save_csv
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
+import numpy as np
 
-features = ['name']
+# important variables
+test_frac = 0.2
+feature = 'name'
+
+# loading path
+path_to_dataset = 'datasets/cs1_us_outlets.csv'
+path_to_embeddings = 'datasets/embeddings.npy'
+
+# saving path
 train_data_save_path = 'datasets/train.csv'
 test_data_save_path = 'datasets/test.csv'
 train_features_save_path = 'datasets/entire_feature_similarity_train.csv'
 test_features_save_path = 'datasets/entire_feature_similarity_test.csv'
 
-test_frac = 0.2
+
 if __name__ == "__main__":
     # we load the dataset
-    dataset = load_dataset_csv('datasets/cs1_us_outlets.csv')
+    dataset = load_dataset_csv(path_to_dataset)
+    embeddings = np.load(path_to_embeddings)
     # or load the .parquet.gzip file
     # dataset = load_dataset_parquet('datasets/cs1_us_outlets.parquet.gzip')
 
@@ -36,7 +46,7 @@ if __name__ == "__main__":
         train,
         kind='permutations',
         NUM_NEG=None,
-        features=features,
+        features=[feature],
         max_neg=True,
         save_to=train_features_save_path
     )
@@ -45,7 +55,7 @@ if __name__ == "__main__":
         test,
         kind='combinations',
         NUM_NEG=None,
-        features=features,
+        features=[feature],
         max_neg=True,
         save_to=test_features_save_path
     )
