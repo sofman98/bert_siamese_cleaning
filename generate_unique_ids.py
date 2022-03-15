@@ -15,15 +15,15 @@ if __name__ == "__main__":
   test = load_dataset_csv(path_to_raw_test_data)
   
   # we select the pairs whose predicted similarity exceeds our defined threshold
-  duplicates_indexes = np.where(prediction[:,2] > similarity_threshold)
+  duplicates_indexes = np.where(prediction[:,-1] > similarity_threshold)
   prediction = prediction[duplicates_indexes]
 
   # we sort the predictions in a descending order
   # to give priority to the most probable duplicates
-  prediction = prediction[(-prediction[:, 2]).argsort()]
+  prediction = prediction[(-prediction[:, -1]).argsort()]
 
   # we get the pairs
-  duplicates = prediction[:, :2].astype(int)
+  duplicates = prediction[:, :-1].astype(int)
 
   counter = 0
   id_dashmotes = np.full((test.shape[0], 1), -1)
