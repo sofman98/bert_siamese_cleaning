@@ -4,14 +4,14 @@ import numpy as np
 
 from data_processing.file_management import load_dataset_csv, save_csv
 
-path_to_predction = 'results/predictions/nn10_prediction.csv'
+path_to_prediction = 'results/predictions/nn10_prediction.csv'
 path_to_raw_test_data = 'datasets/test.csv'
 save_resulting_test_data_to = 'results/unique_ids/predicted_id_dashmote.csv'
 similarity_threshold = 0.5
 
 if __name__ == "__main__":
 
-  prediction = load_dataset_csv(path_to_predction).to_numpy()
+  prediction = load_dataset_csv(path_to_prediction).to_numpy()
   test = load_dataset_csv(path_to_raw_test_data)
   
   # we select the pairs whose predicted similarity exceeds our defined threshold
