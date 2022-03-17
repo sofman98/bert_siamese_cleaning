@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 
 # training parameters
 metric = tf.keras.metrics.Precision()
-num_epochs = 100
+num_epochs = 2
 training_batch_size = 64
 early_stopping_patience = 20
 
@@ -36,17 +36,17 @@ if __name__ == "__main__":
   # Callbacks
   ## early stopping
   es_callback = tf.keras.callbacks.EarlyStopping(
-    monitor=f'val_{metric.name}',
     patience=early_stopping_patience,
-    mode='max'
+    monitor='val_loss',
+    mode='min'
   )
   ## checkpoint
   cp_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=last_model_save_path,
     save_best_only=True,
     verbose=1,
-    monitor=f'val_{metric.name}',
-    mode='max'
+    monitor='val_loss',
+    mode='min'
   )
   
   ######## FILE MANAGEMENT ########
@@ -92,9 +92,9 @@ if __name__ == "__main__":
 
         # when training is over
         # we get the epoch with the best metric score
-        best_epoch = np.argmax(hist.history[f'val_{metric.name}'])
-        metric_score = hist.history[f'val_{metric.name}'][best_epoch]
+        best_epoch = np.argmin(hist.history['val_loss'])
         loss = hist.history['val_loss'][best_epoch]
+        metric_score = hist.history[f'val_{metric.name}'][best_epoch]
         ## then save the results along with the architecture for later
         with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
