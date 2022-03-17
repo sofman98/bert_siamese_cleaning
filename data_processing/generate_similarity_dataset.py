@@ -157,13 +157,13 @@ def generate_feature_similarity_dataset(
   """
   # some verfifications
   assert kind in ['combinations', 'permutations']
-  assert NUM_NEG >= 0
   assert max_neg in [True, False]
 
   # we generate a pair similarity dataset (outlet1, outlet2, similarity)
   if max_neg:
     pair_similarity_dataset = generate_entire_pair_similarity(dataset, kind)
   else:
+    assert NUM_NEG >= 0
     pair_similarity_dataset = generate_pair_similarity_num_neg(dataset, NUM_NEG) # kind is permutations by default
     
   # we select the desired features
