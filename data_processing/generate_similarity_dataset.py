@@ -83,12 +83,10 @@ def generate_pair_similarity_num_neg(
   print("Processing dataset...")
   dataset = preprocess_dataset(dataset)
 
-  print('Generating pair similarity dataset..')
   print('Generating positive instances..')
   positive_data = generate_positive_data(
     dataset,
   )
-
   
   print(f'Generating negative instances with {NUM_NEG} negative instances for every outlet..')
   
