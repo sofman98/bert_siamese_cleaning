@@ -106,6 +106,9 @@ def generate_entire_pair_similarity(
   """
   Selects entire pair_similarity without considering NUM_NEG.
   """
+  # some verfifications
+  assert kind in ['combinations', 'permutations']
+  
   # we select all unique clusters
   unique_clusters = dataset.persistent_cluster.unique()
 
@@ -149,9 +152,9 @@ def generate_feature_similarity_dataset(
   With "similarity" being 0 or 1.
   NUM_NEG represents the number of negative instances for every outlet
   """
-  # somer verfifications
+  # some verfifications
   assert kind in ['combinations', 'permutations']
-  
+
   # we generate a pair similarity dataset (outlet1, outlet2, similarity)
   if max_neg:
     pair_similarity_dataset = generate_entire_pair_similarity(dataset, kind)
