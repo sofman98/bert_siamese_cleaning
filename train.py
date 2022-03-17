@@ -16,13 +16,13 @@ early_stopping_patience = 20
 path_to_train_data = 'datasets/feature_similarity_train.npy'
 
 # path for saving data 
-results_save_path = f'results/grid_search_results/results.csv'
+results_save_path = 'results/grid_search_results/results.csv'
 last_model_save_path = 'results/models/last_trained_model.h5'
 outputs_layer_save_path = 'results/outputs_layers/last_trained_model.npy'
 
 # HYPER-PARAMETER RANGES (for tuning)
-range_num_dense_layers = [3] 
-range_embedding_size = [8]
+range_num_dense_layers = [0] 
+range_embedding_size = [0]
 range_optimizer = ['adam']
 
 if __name__ == "__main__":
