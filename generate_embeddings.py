@@ -3,6 +3,7 @@ from data_processing.data_processing import filter_features
 import tensorflow.keras.layers as layers
 from tensorflow.keras.models import Model
 import tensorflow_hub as hub
+import tensorflow_text
 import numpy as np
 
 # some important variables
