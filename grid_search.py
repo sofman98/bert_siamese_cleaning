@@ -6,7 +6,7 @@ import tensorflow as tf
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-# we declare some important variables
+# training parameters
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
 num_epochs = 10
@@ -14,7 +14,7 @@ training_batch_size = 64
 early_stopping_patience = 20
 
 # path for loading data
-path_to_train_data = 'datasets/entire_feature_similarity_train.npy'
+path_to_train_data = 'datasets/feature_similarity_train.npy'
 
 # path for saving data 
 results_save_path = f'results/grid_search_results/results.csv'
@@ -35,7 +35,7 @@ if __name__ == "__main__":
   
   # we split the dataset into train and test
   X = feature_similarity_dataset[:, :-1]
-  y = feature_similarity_dataset[:, -1].astype(int)
+  y = feature_similarity_dataset[:, -1]
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
 
   # Callbacks

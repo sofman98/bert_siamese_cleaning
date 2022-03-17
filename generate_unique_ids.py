@@ -4,7 +4,7 @@ import numpy as np
 
 from data_processing.file_management import load_dataset_csv, save_csv
 
-path_to_prediction = 'results/predictions/nn10_prediction.csv'
+path_to_prediction = 'results/predictions/best_prediction.csv'
 path_to_raw_test_data = 'datasets/test.csv'
 save_resulting_test_data_to = 'results/unique_ids/predicted_id_dashmote.csv'
 similarity_threshold = 0.5
@@ -16,14 +16,14 @@ if __name__ == "__main__":
   
   # we select the pairs whose predicted similarity exceeds our defined threshold
   duplicates_indexes = np.where(prediction[:,-1] > similarity_threshold)
-  prediction = prediction[duplicates_indexes]
+  duplicates = prediction[duplicates_indexes]
 
   # we sort the predictions in a descending order
   # to give priority to the most probable duplicates
-  prediction = prediction[(-prediction[:, -1]).argsort()]
+  duplicates = duplicates[(-duplicates[:, -1]).argsort()]
 
   # we get the pairs
-  duplicates = prediction[:, :-1].astype(int)
+  duplicates = duplicates[:, :-1].astype(int)
 
   counter = 0
   id_dashmotes = np.full((test.shape[0], 1), -1)

@@ -18,8 +18,8 @@ path_to_embeddings = 'datasets/embeddings.npy'
 # saving path
 train_data_save_path = 'datasets/train.csv'
 test_data_save_path = 'datasets/test.csv'
-train_features_save_path = 'datasets/entire_feature_similarity_train.npy'
-test_features_save_path = 'datasets/entire_feature_similarity_test.npy'
+train_features_save_path = 'datasets/feature_similarity_train.npy'
+test_features_save_path = 'datasets/feature_similarity_test.npy'
 
 
 if __name__ == "__main__":
@@ -29,20 +29,21 @@ if __name__ == "__main__":
     dataset = load_dataset_csv(path_to_dataset)
     embeddings = np.load(path_to_embeddings)
 
-    # we add the embeddings data to the dataset
-    dataset[f'{feature}_embedding'] = list(embeddings)
-
     # we split it
     test = dataset.sample(frac=test_frac, random_state=0)
     train = dataset.drop(test.index)
 
-    # we reset the index not to be out of bounds
-    test.reset_index(drop=True, inplace=True)
-    train.reset_index(drop=True, inplace=True)
-
     # saving the test and train sets
     save_csv(train, train_data_save_path)
     save_csv(test, test_data_save_path)
+
+    # we add the embeddings
+    test[f'{feature}_embedding'] = list(embeddings[test.index])
+    train[f'{feature}_embedding'] = list(embeddings[train.index])
+
+    # we reset the index not to be out of bounds
+    test.reset_index(drop=True, inplace=True)
+    train.reset_index(drop=True, inplace=True)
 
     # next we generate the feature similarity dataset (feature_set1, feature_set2, similarity)
     # max_neg=True, which means it includes all possible combinations 
