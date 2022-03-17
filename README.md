@@ -34,7 +34,7 @@ $python test.py
 Running the command also saves the predictions in ```results/predictions/last_prediction.csv```.
 
 ## Generating unique IDs
-After running the previous command and saving the predictions, you can use them to detect duplicates in the database and give them a same ```predicted_id_dashmote```. By default, the predictions present in ```results/predictions/best_prediction.csv``` are used. The resulting data will be stored in ```results/unique_ids/predicted_id_dashmote.csv```.
+After running the previous command and saving the predictions, you can use them to detect duplicates in the database and give them a same ```predicted_id_dashmote```. By default, the predictions present in ```results/predictions/best_prediction.csv``` are used. The resulting data will be stored in ```results/unique_ids/predicted_id_dashmote.parquet.gzip```.
 
 ```
 $python generate_unique_ids.py
