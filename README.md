@@ -24,7 +24,7 @@ $python train.py
 The grid search results will be stored inside the ```results/grid_search_results/``` directory and your last trained model will be in ```results/models/last_trained_model.h5```. 
 
 ### Important note:
-You can modify 3 hyper-parameters, the number of dense hidden layers (range_num_dense_layers), the optimizer (range_optimizer), and the embedding size (range_embedding_size) which is the number of nodes of a sub-model's last layer. These hyper-parameters are meant for the sub-models and not directly the siamese model. The sub-models always have a decreasing number of nodes and each layer has half the nodes of its preceding layer. For example, with 3 dense layers and an embedding size of 8. the structure of the sub-models would be: [32 -> 16 -> 8]. Please, keep in mind that there is a Batch Normalization layer between every dense layer.
+You can modify 3 hyper-parameters, the number of dense hidden layers (```range_num_dense_layers```), the optimizer (```range_optimizer```), and the embedding size (```range_embedding_size```) which is the number of nodes of a sub-model's last layer. These hyper-parameters are meant for the sub-models and not directly the siamese model. The sub-models always have a decreasing number of nodes and each layer has half the nodes of its preceding layer. For example, with 3 dense layers and an embedding size of 8. the structure of the sub-models would be: [32 -> 16 -> 8]. Please, keep in mind that there is a Batch Normalization layer between every dense layer.
 
 ## Testing
 Test the model by running the following command. By default, it loads the model from ```results/models/best_model.h5```. Please change ```path_to_model``` to use your own model.
