@@ -2,7 +2,6 @@ from os.path import exists
 from data_processing.file_management import load_dataset_csv, create_folder
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 from models.model_building import build_siamese_model
-from models.transfer_learning import load_siamese_model, save_outputs_layer
 import tensorflow as tf
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -10,51 +9,35 @@ from sklearn.model_selection import train_test_split
 tf.config.run_functions_eagerly(True) # we need this because of the custom layer
 
 # we declare some important variables
-NUM_NEG = 5 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
-max_neg = False # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
-metric_name = 'precision_1' 
+metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
-features = ['name']   # selected features
-num_features = len(features)
-num_epochs = 1
-training_batch_size = 12 # big batch size might cause ram overload
+feature = 'name'   # selected features
+num_features = 128
+num_epochs = 10
+training_batch_size = 64
 early_stopping_patience = 20
-save_feature_similarity_dataset_to=''  # no saving if empty
+
+# path for loading data
+path_to_entire_training_data = 'datasets/entire_feature_similarity_train.npy'
+
 # path for saving data 
-results_save_path = f'results/grid_search_results/num_neg_{NUM_NEG}_{metric_name}.csv'
+results_save_path = f'results/grid_search_results/num_neg_max.csv'
 last_model_save_path = 'results/models/last_trained_model.h5'
 outputs_layer_save_path = 'results/outputs_layers/last_trained_model.npy'
 
 
 # HYPER-PARAMETER RANGES (for tuning)
 # if you use different values than 0, you need to load your entire model when testing
-range_num_dense_layers = [0] 
-range_embedding_size = [0]
+range_num_dense_layers = [3] 
+range_embedding_size = [8]
 range_optimizer = ['adam']
 
 if __name__ == "__main__":
 
-  # DATASET PREPARATION
-  if max_neg:
-    # ..or directly load a pre-computed feature_dataset this way:
-    feature_similarity_dataset = load_dataset_csv('datasets/entire_feature_similarity_train.csv')
-    # this one above contains all negative instances
-    # you can try generating one with diffrent NUM_NEG values
-  else:
-    # we load the raw data file
-    dataset = load_dataset_csv(path = 'datasets/train.csv')
-    # we generate the feature similarity and save it (feature_set1, feature_set2, similarity)
-    feature_similarity_dataset = generate_feature_similarity_dataset(
-      dataset,
-      kind='permutations',
-      features=features,
-      NUM_NEG=NUM_NEG,
-      max_neg=False,
-      save_to=save_feature_similarity_dataset_to
-    )
+  # DATASET LOADING
+  feature_similarity_dataset = np.load(path_to_entire_training_data, allow_pickle=True)
   
   # we split the dataset into train and test
-  feature_similarity_dataset = feature_similarity_dataset.to_numpy(dtype=str)
   X = feature_similarity_dataset[:, :-1]
   y = feature_similarity_dataset[:, -1].astype(int)
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
@@ -86,7 +69,7 @@ if __name__ == "__main__":
   ## only if file doesn't exist
   if not exists(results_save_path):
     with open(results_save_path, 'w') as file:
-        file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric_name}\n")
+        file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric_name}\n") # title
   
 
   ########   GRID SEARCH   ########
@@ -97,9 +80,10 @@ if __name__ == "__main__":
 
         # Siamese model building
         model = build_siamese_model(
-            inputs_shape=(), #for text
+            inputs_shape=(128,), #for text
             num_dense_layers=num_dense_layers,
-            embedding_size=embedding_size
+            embedding_size=embedding_size,
+            use_encoder=False
         )
         model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=[metric])
 
@@ -122,12 +106,3 @@ if __name__ == "__main__":
         with open(results_save_path, 'a') as file:
           file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
         
-        if num_dense_layers==0:
-          # as the model is very big, we save the output layer
-          # you can delete the fully saved model if you don't need it
-          model = load_siamese_model(
-            from_outputs_layer=False,
-            path=last_model_save_path
-          )
-          save_outputs_layer(model, outputs_layer_save_path)
-

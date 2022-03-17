@@ -78,7 +78,6 @@ def generate_negative_data(
 def generate_pair_similarity_num_neg(
     dataset, 
     NUM_NEG,
-    save_to=''
   ):
   """
   We generate the positive and negative data and combine them.
@@ -102,14 +101,6 @@ def generate_pair_similarity_num_neg(
 
   # combining the positive and negative data to form a pair similarity dataset
   pair_similarity_dataset = np.concatenate([positive_data, negative_data], axis = 0)
-
-
-  #saving the new generate dataset, if given a path
-  if save_to:
-    # converting back to DataFrame
-    pair_similarity_df = pd.DataFrame(data=pair_similarity_dataset, columns=['outlet1', 'outlet2', 'similarity'])
-    print(f'Saving the pair similarity dataset to {save_to}..')
-    save_csv(pair_similarity_df, save_to)
 
   return pair_similarity_dataset
 
@@ -171,22 +162,21 @@ def generate_feature_similarity_dataset(
     pair_similarity_dataset = generate_pair_similarity_num_neg(dataset, NUM_NEG) # kind is permutations by default
     
   # we select the desired features
-  filtered_dataset = filter_features(dataset, features)
+  # we squeeze it to get rid of the undesired dimension in axis 1
+  filtered_dataset = np.array(filter_features(dataset, features).values.tolist()).squeeze(axis=1)
+
+
   # we get the feature values for all pairs
-  outlet1 = filtered_dataset.iloc[pair_similarity_dataset[:,0]].to_numpy()
-  outlet2 = filtered_dataset.iloc[pair_similarity_dataset[:,1]].to_numpy()
+  outlet1 = filtered_dataset[pair_similarity_dataset[:, 0]]
+  outlet2 = filtered_dataset[pair_similarity_dataset[:, 1]]
   similarity = pair_similarity_dataset[:, -1].reshape((-1, 1))
 
   feature_similarity_dataset = np.concatenate([outlet1, outlet2, similarity], axis=1)
 
-  #transforming into dataframe
-  columns = [ col + f'{i}' for col in list(filtered_dataset.columns) for i in [1, 2]] + ['similarity']
-  feature_similarity_df = pd.DataFrame(data=feature_similarity_dataset, columns=columns)
-
   #saving the new generate dataset, if given a path
   if save_to:
     print(f'Saving the feature similarity dataset to {save_to}..')
-    save_csv(feature_similarity_df, save_to)
+    np.save(save_to, feature_similarity_dataset)
 
-  return feature_similarity_df
+  return feature_similarity_dataset
   

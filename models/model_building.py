@@ -5,14 +5,14 @@ from tensorflow.keras.models import Model
 import tensorflow_hub as hub
 import tensorflow_text
 
-def build_text_embedding_model(
+def build_embedding_model(
       inputs,
       use_encoder,
       num_dense_layers,
       embedding_size,
+      preprocessor,
+      encoder,
       name,
-      preprocessor=None,
-      encoder=None,
     ):
   """
   One of the submodels that create the embedding.
@@ -44,7 +44,9 @@ def build_siamese_model(
       inputs_shape,
       num_dense_layers,
       embedding_size,
-      use_encoder=False,
+      use_encoder,
+      link_to_preprocessor='',
+      link_to_encoder='',
     ):
   """
   The final siamese model.
@@ -54,33 +56,40 @@ def build_siamese_model(
   activation to predict the probability of similarity.
   """
 
-  # we define the inputs
-  inputs_a = layers.Input(name="inputs_a", dtype=tf.string, shape = inputs_shape)
-  inputs_b = layers.Input(name="inputs_b", dtype=tf.string, shape = inputs_shape)
-
-  # we define the bert encoder and preprocessor
-  preprocessor = hub.KerasLayer("http://tfhub.dev/tensorflow/albert_en_preprocess/3")
-  encoder = hub.KerasLayer("https://tfhub.dev/tensorflow/albert_en_base/3", trainable=False)
+  if use_encoder:
+    # we define the inputs with type string
+    inputs_a = layers.Input(name="inputs_a", dtype=tf.string, shape = inputs_shape)
+    inputs_b = layers.Input(name="inputs_b", dtype=tf.string, shape = inputs_shape)
+    # we define the bert encoder and preprocessor
+    preprocessor = hub.KerasLayer(link_to_preprocessor)
+    encoder = hub.KerasLayer(link_to_encoder, trainable=False)
+  else:
+    # we define the inputs with type float (default)
+    inputs_a = layers.Input(name="inputs_a", shape = inputs_shape)
+    inputs_b = layers.Input(name="inputs_b", shape = inputs_shape)
+    # we don't need the preporcessor or encoder
+    preprocessor = None
+    encoder = None
 
   # we add the layer we have created
   differences = DifferenceLayer()(
-      build_text_embedding_model(
-        inputs_a,
-        use_encoder,
-        preprocessor,
-        encoder,
-        num_dense_layers,
-        embedding_size,
+      build_embedding_model(
+        inputs=inputs_a,
+        use_encoder=use_encoder,
+        num_dense_layers=num_dense_layers,
+        embedding_size=embedding_size,
+        preprocessor=preprocessor,
+        encoder=encoder,
         name='a',
         )(inputs_a),
 
-      build_text_embedding_model(
-        inputs_b,
-        use_encoder,
-        preprocessor,
-        encoder,
-        num_dense_layers,
-        embedding_size,
+      build_embedding_model(
+        inputs=inputs_b,
+        use_encoder=use_encoder,
+        num_dense_layers=num_dense_layers,
+        embedding_size=embedding_size,
+        preprocessor=preprocessor,
+        encoder=encoder,
         name='b',
         )(inputs_b),
   )
