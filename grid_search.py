@@ -7,7 +7,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 # training parameters
-metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
 num_epochs = 10
 training_batch_size = 64
@@ -41,7 +40,7 @@ if __name__ == "__main__":
   # Callbacks
   ## early stopping
   es_callback = tf.keras.callbacks.EarlyStopping(
-    monitor=f'val_{metric_name}',
+    monitor=f'val_{metric.name}',
     patience=early_stopping_patience,
     mode='max'
   )
@@ -50,7 +49,7 @@ if __name__ == "__main__":
     filepath=last_model_save_path,
     save_best_only=True,
     verbose=1,
-    monitor=f'val_{metric_name}',
+    monitor=f'val_{metric.name}',
     mode='max'
   )
   
@@ -65,7 +64,7 @@ if __name__ == "__main__":
   ## only if file doesn't exist
   if not exists(results_save_path):
     with open(results_save_path, 'w') as file:
-        file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric_name}\n") # title
+        file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric.name}\n") # title
   
 
   ########   GRID SEARCH   ########
@@ -98,8 +97,8 @@ if __name__ == "__main__":
 
         # when training is over
         # we get the epoch with the best metric score
-        best_epoch = np.argmax(hist.history[f'val_{metric_name}'])
-        metric_score = hist.history[f'val_{metric_name}'][best_epoch]
+        best_epoch = np.argmax(hist.history[f'val_{metric.name}'])
+        metric_score = hist.history[f'val_{metric.name}'][best_epoch]
         loss = hist.history['val_loss'][best_epoch]
         ## then save the results along with the architecture for later
         with open(results_save_path, 'a') as file:
