@@ -10,7 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # loading paths
-path_to_model='results/models/best_model.h5'
+path_to_model='results/models/last_trained_model.h5'
 path_to_feature_similarity_test_data='datasets/feature_similarity_test.npy'
 path_to_raw_test_data='datasets/test.csv'
 

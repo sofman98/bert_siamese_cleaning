@@ -9,7 +9,7 @@ feature = 'name'
 # train data config
 train_NUM_NEG = 5 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
 train_max_neg = True # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
-train_kind = 'combinations'
+train_kind = 'permutations' # 'combinations' or 'permutations'
 
 # loading path
 path_to_dataset = 'datasets/cs1_us_outlets.csv'
