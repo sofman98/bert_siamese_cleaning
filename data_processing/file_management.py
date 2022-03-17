@@ -12,7 +12,7 @@ def load_dataset_parquet(path):
 
 # csv
 # for loading the dataset
-def load_dataset_csv(path):
+def load_csv(path):
   return pd.read_csv(path, sep=":")
 
 # for saving csv files

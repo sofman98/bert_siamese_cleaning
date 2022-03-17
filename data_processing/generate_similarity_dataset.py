@@ -3,7 +3,6 @@ import pandas as pd
 import random
 from data_processing.data_processing import preprocess_dataset
 from data_processing.data_processing import filter_features
-from data_processing.file_management import save_csv
 import itertools as it
 
 def generate_positive_data(
@@ -47,8 +46,6 @@ def generate_negative_data(
   adding the negatives.
   we randomly select a number of non-similar places *in the same persistent_cluster* to act as a negative [id1, id2, 0].
   we specifically chose places in the same cluster as they would be more difficult to predict when training on latitude and longitude.
-  we define the parameter NUM_NEG or number of negatives instances for every outlet
-  if max_neg==True, we select all possible combinations from same persistent_cluster (best)
   """
   
   negative_data = []
@@ -81,6 +78,7 @@ def generate_pair_similarity_num_neg(
   ):
   """
   We generate the positive and negative data and combine them.
+  we define the parameter NUM_NEG or number of negatives instances for every outlet
   """
   print("Processing dataset...")
   dataset = preprocess_dataset(dataset)
@@ -110,7 +108,7 @@ def generate_entire_pair_similarity(
     kind,
   ):
   """
-  Selects entire pair_similarity without considering NUM_NEG
+  Selects entire pair_similarity without considering NUM_NEG.
   """
   # we select all unique clusters
   unique_clusters = dataset.persistent_cluster.unique()

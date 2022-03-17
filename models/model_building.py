@@ -1,4 +1,4 @@
-from models.difference_layer import DifferenceLayer
+from models.difference_layer import DistanceLayer
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 from tensorflow.keras.models import Model
@@ -21,8 +21,9 @@ def build_embedding_model(
   each layer has half the number of nodes of the preceding one.
   example with embedding_size=8 and num_dense_layers=3:
   [inputs -> 32 -> 16 -> 8].
-  We name the layers for transfer learning. we separate between model A and model B.
+  We separate the submodels into model A and model B.
   """
+  # If we include the word embedding model or not
   if use_encoder:
     encoder_inputs = preprocessor(inputs)
     encoder_outputs = encoder(encoder_inputs)
@@ -55,7 +56,7 @@ def build_siamese_model(
   The difference is then fed to a dense layer with a sigmoid
   activation to predict the probability of similarity.
   """
-
+  # If we include the word embedding model or not
   if use_encoder:
     # we define the inputs with type string
     inputs_a = layers.Input(name="inputs_a", dtype=tf.string, shape = inputs_shape)
@@ -72,7 +73,7 @@ def build_siamese_model(
     encoder = None
 
   # we add the layer we have created
-  differences = DifferenceLayer()(
+  differences = DistanceLayer()(
       build_embedding_model(
         inputs=inputs_a,
         use_encoder=use_encoder,

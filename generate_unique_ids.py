@@ -2,7 +2,7 @@ from data_processing.file_management import save_csv, create_folder
 import pandas as pd
 import numpy as np
 
-from data_processing.file_management import load_dataset_csv, save_csv
+from data_processing.file_management import load_csv, save_csv
 
 path_to_prediction = 'results/predictions/best_prediction.csv'
 path_to_raw_test_data = 'datasets/test.csv'
@@ -11,8 +11,8 @@ similarity_threshold = 0.5
 
 if __name__ == "__main__":
 
-  prediction = load_dataset_csv(path_to_prediction).to_numpy()
-  test = load_dataset_csv(path_to_raw_test_data)
+  prediction = load_csv(path_to_prediction).to_numpy()
+  test = load_csv(path_to_raw_test_data)
   
   # we select the pairs whose predicted similarity exceeds our defined threshold
   duplicates_indexes = np.where(prediction[:,-1] > similarity_threshold)
@@ -23,11 +23,11 @@ if __name__ == "__main__":
   duplicates = duplicates[(-duplicates[:, -1]).argsort()]
 
   # we get the pairs
-  duplicates = duplicates[:, :-1].astype(int)
+  duplicate_pairs = duplicates[:, :-1].astype(int)
 
   counter = 0
   id_dashmotes = np.full((test.shape[0], 1), -1)
-  for (outlet1, outlet2) in duplicates:
+  for (outlet1, outlet2) in duplicate_pairs:
     # if none of the outlets was attributed an id_dashmote
     if id_dashmotes[outlet1] < 0 and id_dashmotes[outlet2] < 0:
       id_dashmotes[outlet1] = counter

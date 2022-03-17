@@ -1,7 +1,7 @@
 import tensorflow as tf
 import tensorflow.keras.layers as layers
 
-class DifferenceLayer(layers.Layer):
+class DistanceLayer(layers.Layer):
     """
     This layer is responsible for computing the absolute value of the
     difference between two embeddings

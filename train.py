@@ -1,5 +1,5 @@
 from os.path import exists
-from data_processing.file_management import load_dataset_csv, create_folder
+from data_processing.file_management import create_folder
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 from models.model_building import build_siamese_model
 import tensorflow as tf
@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 
 # training parameters
 metric = tf.keras.metrics.Precision()
-num_epochs = 10
+num_epochs = 100
 training_batch_size = 64
 early_stopping_patience = 20
 
@@ -20,19 +20,17 @@ results_save_path = f'results/grid_search_results/results.csv'
 last_model_save_path = 'results/models/last_trained_model.h5'
 outputs_layer_save_path = 'results/outputs_layers/last_trained_model.npy'
 
-
 # HYPER-PARAMETER RANGES (for tuning)
-# if you use different values than 0, you need to load your entire model when testing
 range_num_dense_layers = [3] 
 range_embedding_size = [8]
 range_optimizer = ['adam']
 
 if __name__ == "__main__":
 
-  # DATASET LOADING
+  # TRAIN-SET LOADING
   feature_similarity_dataset = np.load(path_to_train_data, allow_pickle=True)
   
-  # we split the dataset into train and test
+  # We split the dataset into train and test
   X = feature_similarity_dataset[:, :-1]
   y = feature_similarity_dataset[:, -1]
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)

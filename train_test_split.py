@@ -1,4 +1,4 @@
-from data_processing.file_management import load_dataset_csv, load_dataset_parquet, save_csv
+from data_processing.file_management import load_csv, load_dataset_parquet, save_csv
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 import numpy as np
 
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     # we load the dataset and the generated embeddings
     # or load the .parquet.gzip file
     # dataset = load_dataset_parquet('datasets/cs1_us_outlets.parquet.gzip')
-    dataset = load_dataset_csv(path_to_dataset)
+    dataset = load_csv(path_to_dataset)
     embeddings = np.load(path_to_embeddings)
 
     # we split it
