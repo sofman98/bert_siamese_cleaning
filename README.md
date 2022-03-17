@@ -3,7 +3,7 @@ dashmote assignment
 
 ## Data Preprocessing
 
-### (Optional) Embedding Generation and Storing
+### (Optional) Embedding Generation and Saving
 To accelerate the training, you can generate latent vector representation of sentences then store them by running:
 ```
 $python generate_embeddings.py
