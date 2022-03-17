@@ -8,7 +8,7 @@ To accelerate the training, you can generate latent vector representation of sen
 ```
 $python generate_embeddings.py
 ```
-By default, we use the uncased Small Bert Model with 2 layers and a hidden size of 128. You can change that by changing the variables ```link_to_preprocessor``` and ```link_to_encoder```. The embeddings will be stored in ```datasets/embeddings.npy```, you can change that by modifying ```save_embeddings_to```.
+By default, we use the [uncased Small Bert Model](https://tfhub.dev/tensorflow/small_bert/bert_en_uncased_L-2_H-128_A-2/2) with 2 layers and a hidden size of 128. You can change that by changing the variables ```link_to_preprocessor``` and ```link_to_encoder```. The embeddings will be stored in ```datasets/embeddings.npy```, you can change that by modifying ```save_embeddings_to```.
 
 ### Train Test Split
 Split the dataset into a test-set and a train-set. This command also generates the feature similarity dataset (feature_set1, feature_set2, similarity) for both test and train data. all 4 files will be stored inside the ```datasets/``` directory.
