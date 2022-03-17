@@ -6,22 +6,18 @@ import tensorflow as tf
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-tf.config.run_functions_eagerly(True) # we need this because of the custom layer
-
 # we declare some important variables
 metric_name = 'precision' 
 metric = tf.keras.metrics.Precision()
-feature = 'name'   # selected features
-num_features = 128
 num_epochs = 10
 training_batch_size = 64
 early_stopping_patience = 20
 
 # path for loading data
-path_to_entire_training_data = 'datasets/entire_feature_similarity_train.npy'
+path_to_train_data = 'datasets/entire_feature_similarity_train.npy'
 
 # path for saving data 
-results_save_path = f'results/grid_search_results/num_neg_max.csv'
+results_save_path = f'results/grid_search_results/results.csv'
 last_model_save_path = 'results/models/last_trained_model.h5'
 outputs_layer_save_path = 'results/outputs_layers/last_trained_model.npy'
 
@@ -35,7 +31,7 @@ range_optimizer = ['adam']
 if __name__ == "__main__":
 
   # DATASET LOADING
-  feature_similarity_dataset = np.load(path_to_entire_training_data, allow_pickle=True)
+  feature_similarity_dataset = np.load(path_to_train_data, allow_pickle=True)
   
   # we split the dataset into train and test
   X = feature_similarity_dataset[:, :-1]
@@ -78,9 +74,12 @@ if __name__ == "__main__":
     for embedding_size in range_embedding_size:
       for optimizer in range_optimizer:
 
+        # we get the number of features for each input
+        num_features = int(X.shape[1] / 2)
+
         # Siamese model building
         model = build_siamese_model(
-            inputs_shape=(128,), #for text
+            inputs_shape=(num_features,), #for text
             num_dense_layers=num_dense_layers,
             embedding_size=embedding_size,
             use_encoder=False

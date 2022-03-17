@@ -9,10 +9,11 @@ feature = 'name'
 # train data config
 train_NUM_NEG = 5 # number of negative instances per outlet - Dataset is balanced if NUM_NEG==1
 train_max_neg = True # if True then NUM_NEG is useless, uses all negative instance, if False then considers NUM_NEG
+train_kind = 'combinations'
 
 # loading path
 path_to_dataset = 'datasets/cs1_us_outlets.csv'
-path_to_encodings = 'datasets/encodings.npy'
+path_to_embeddings = 'datasets/embeddings.npy'
 
 # saving path
 train_data_save_path = 'datasets/train.csv'
@@ -22,14 +23,14 @@ test_features_save_path = 'datasets/entire_feature_similarity_test.npy'
 
 
 if __name__ == "__main__":
-    # we load the dataset and the generated encodings
+    # we load the dataset and the generated embeddings
     # or load the .parquet.gzip file
     # dataset = load_dataset_parquet('datasets/cs1_us_outlets.parquet.gzip')
     dataset = load_dataset_csv(path_to_dataset)
-    encodings = np.load(path_to_encodings)
+    embeddings = np.load(path_to_embeddings)
 
-    # we add the encodings data to the dataset
-    dataset[f'{feature}_encoding'] = list(encodings)
+    # we add the embeddings data to the dataset
+    dataset[f'{feature}_embedding'] = list(embeddings)
 
     # we split it
     test = dataset.sample(frac=test_frac, random_state=0)
@@ -46,14 +47,14 @@ if __name__ == "__main__":
     # next we generate the feature similarity dataset (feature_set1, feature_set2, similarity)
     # max_neg=True, which means it includes all possible combinations 
     # in a same persistent_cluster for negative values (non-similarity)
-    # we select all possible permutations for the training
+    # we select all possible permutations or combinations for the training
     # and all unique combinations for the test
 
     _ = generate_feature_similarity_dataset(
         train,
-        kind='combinations',
+        kind=train_kind,
         NUM_NEG=train_NUM_NEG,
-        features=[f'{feature}_encoding'],
+        features=[f'{feature}_embedding'],
         max_neg=train_max_neg,
         save_to=train_features_save_path
     )
@@ -62,7 +63,7 @@ if __name__ == "__main__":
         test,
         kind='combinations',
         NUM_NEG=None,
-        features=[f'{feature}_encoding'],
+        features=[f'{feature}_embedding'],
         max_neg=True,
         save_to=test_features_save_path
     )

@@ -2,7 +2,7 @@
 datasets/*
 !datasets/cs1_us_outlets.csv
 !datasets/cs1_us_outlets.parquet.gzip
-!datasets/encodings.npy
+!datasets/embeddings.npy
 # results
 results/*
 !results/models/
