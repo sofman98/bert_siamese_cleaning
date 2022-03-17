@@ -1,6 +1,4 @@
 import numpy as np
-import pandas as pd
-import random
 from data_processing.data_processing import preprocess_dataset
 from data_processing.data_processing import filter_features
 import itertools as it
@@ -151,6 +149,9 @@ def generate_feature_similarity_dataset(
   With "similarity" being 0 or 1.
   NUM_NEG represents the number of negative instances for every outlet
   """
+  # somer verfifications
+  assert kind in ['combinations', 'permutations']
+  
   # we generate a pair similarity dataset (outlet1, outlet2, similarity)
   if max_neg:
     pair_similarity_dataset = generate_entire_pair_similarity(dataset, kind)

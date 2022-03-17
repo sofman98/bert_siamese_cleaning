@@ -58,11 +58,9 @@ def filter_features(
   """
   we filter the dataset according desired features
   """
-  # we remove the incorrect feature names
-  for index, feature in enumerate(features):
-    if feature not in dataset.columns:
-        print(f'Error: no feature named {feature}.')
-        features.pop(index)
+  # we verify the feature exists  
+  for feature in features:
+    assert feature in dataset.columns 
 
   # we provide default values
   ## if features is empty, keep the original features
