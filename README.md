@@ -3,15 +3,15 @@ dashmote assignment
 
 ## Data Preprocessing
 
-### Embedding Generation and Storing
+### (Optional) Embedding Generation and Storing
 To accelerate the training, you can generate latent vector representation of sentences then store them by running:
 ```
 $python generate_embeddings.py
 ```
-By default, we use the [uncased Small Bert Model](https://tfhub.dev/tensorflow/small_bert/bert_en_uncased_L-2_H-128_A-2/2) with 2 layers and a hidden size of 128. You can change that by changing the variables ```link_to_preprocessor``` and ```link_to_encoder```. The embeddings will be stored in ```datasets/embeddings.npy```.
+By default, we use the [uncased Small Bert Model](https://tfhub.dev/tensorflow/small_bert/bert_en_uncased_L-2_H-128_A-2/2) with 2 layers and a hidden size of 128. You can change that by changing the variables ```link_to_preprocessor``` and ```link_to_encoder```. The embeddings will be stored in ```datasets/embeddings.npy```. pre-computed embeddings were already saved, this step can therefore be skipped.
 
 ### Train Test Split
-Split the dataset into a test-set and a train-set. This command also generates the feature similarity dataset (feature_set1, feature_set2, similarity) for both test and train data. all 4 files will be stored inside the ```datasets/``` directory.
+Split the dataset into a test-set and a train-set. This command also generates the feature similarity dataset (feature_set1, feature_set2, similarity) for both test and train data. all 4 files will be stored inside the ```datasets/``` directory. When selecting the negative instances, the default behavior is to consider all non-similar outlet pairs in a same persistent_cluster, you can change that by controlling the number of negative instances by outlets ```train_NUM_NEG```, don't forget to set ```train_max_neg = False```.
 ```
 $python train_test_split.py
 ```
