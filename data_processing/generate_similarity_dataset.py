@@ -45,6 +45,7 @@ def generate_negative_data(
   we randomly select a number of non-similar places *in the same persistent_cluster* to act as a negative [id1, id2, 0].
   we specifically chose places in the same cluster as they would be more difficult to predict when training on latitude and longitude.
   """
+  assert NUM_NEG >= 0
   
   negative_data = []
   #for every outlet
@@ -78,6 +79,8 @@ def generate_pair_similarity_num_neg(
   We generate the positive and negative data and combine them.
   we define the parameter NUM_NEG or number of negatives instances for every outlet
   """
+  assert NUM_NEG >= 0
+
   print("Processing dataset...")
   dataset = preprocess_dataset(dataset)
 
@@ -108,7 +111,7 @@ def generate_entire_pair_similarity(
   """
   # some verfifications
   assert kind in ['combinations', 'permutations']
-  
+
   # we select all unique clusters
   unique_clusters = dataset.persistent_cluster.unique()
 
@@ -154,6 +157,8 @@ def generate_feature_similarity_dataset(
   """
   # some verfifications
   assert kind in ['combinations', 'permutations']
+  assert NUM_NEG >= 0
+  assert max_neg in [True, False]
 
   # we generate a pair similarity dataset (outlet1, outlet2, similarity)
   if max_neg:
