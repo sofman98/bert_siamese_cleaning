@@ -1,18 +1,16 @@
-from data_processing.file_management import save_csv, create_folder
+from data_processing.file_management import load_parquet, load_csv, save_parquet, create_folder
 import pandas as pd
 import numpy as np
 
-from data_processing.file_management import load_csv, save_csv
-
 path_to_prediction = 'results/predictions/best_prediction.csv'
-path_to_raw_test_data = 'datasets/test.csv'
-save_resulting_test_data_to = 'results/unique_ids/predicted_id_dashmote.csv'
+path_to_raw_test_data = 'datasets/test.parquet.gzip'
+save_resulting_test_data_to = 'results/unique_ids/predicted_id_dashmote.parquet.gzip'
 similarity_threshold = 0.5
 
 if __name__ == "__main__":
 
   prediction = load_csv(path_to_prediction).to_numpy()
-  test = load_csv(path_to_raw_test_data)
+  test = load_parquet(path_to_raw_test_data)
   
   # we select the pairs whose predicted similarity exceeds our defined threshold
   duplicates_indexes = np.where(prediction[:,-1] > similarity_threshold)
@@ -50,5 +48,7 @@ if __name__ == "__main__":
   id_dashmotes = pd.DataFrame(id_dashmotes, columns=['predicted_id_dashmote'], dtype=int)
   modified_test_data = pd.concat([test, id_dashmotes], axis=1)
   create_folder(save_resulting_test_data_to)
-  save_csv(modified_test_data, save_resulting_test_data_to)
+  save_parquet(modified_test_data, save_resulting_test_data_to)
   print(f'results saved in {save_resulting_test_data_to}')
+  #display
+  print(modified_test_data)

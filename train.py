@@ -1,6 +1,5 @@
 from os.path import exists
 from data_processing.file_management import create_folder
-from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 from models.model_building import build_siamese_model
 import tensorflow as tf
 import numpy as np
@@ -18,7 +17,6 @@ path_to_train_data = 'datasets/feature_similarity_train.npy'
 # path for saving data 
 results_save_path = 'results/grid_search_results/results.csv'
 last_model_save_path = 'results/models/last_trained_model.h5'
-outputs_layer_save_path = 'results/outputs_layers/last_trained_model.npy'
 
 # HYPER-PARAMETER RANGES (for tuning)
 range_num_dense_layers = [0] 
@@ -56,7 +54,6 @@ if __name__ == "__main__":
   # we create the folders if they don't exist
   create_folder(results_save_path)
   create_folder(last_model_save_path)
-  create_folder(outputs_layer_save_path)
 
   # create a file for saving the best registered results
   ## only if file doesn't exist

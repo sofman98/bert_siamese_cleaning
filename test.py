@@ -1,6 +1,6 @@
 from tabnanny import verbose
 from models.transfer_learning import load_siamese_model
-from data_processing.file_management import load_csv, save_csv, create_folder
+from data_processing.file_management import load_parquet, save_csv, create_folder
 from data_processing.generate_similarity_dataset import generate_entire_pair_similarity
 from tensorflow.math import confusion_matrix
 import numpy as np
@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 # loading paths
 path_to_model='results/models/best_model.h5'
 path_to_feature_similarity_test_data='datasets/feature_similarity_test.npy'
-path_to_raw_test_data='datasets/test.csv'
+path_to_raw_test_data='datasets/test.parquet.gzip'
 
 # save paths
 save_prediction_to='results/predictions/last_prediction.csv'
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     print('Saving the prediction...')
     # we first load the raw test set
-    raw_test_data = load_csv(path_to_raw_test_data)
+    raw_test_data = load_parquet(path_to_raw_test_data)
     # we generate the (outlet1, outlet2, similarity) dataset
     pair_similarity_combinations = generate_entire_pair_similarity(raw_test_data, 'combinations')
     # we remove the actual similarity

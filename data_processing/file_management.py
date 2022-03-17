@@ -5,19 +5,20 @@ import os, errno
 
 # parquet
 # for loading the dataset
-def load_dataset_parquet(path):
+def load_parquet(path):
   return pd.read_parquet(path)
 
-# I prefer csv
+def save_parquet(dataframe, path):
+  dataframe.to_parquet(path, index=False)
 
 # csv
 # for loading the dataset
 def load_csv(path):
-  return pd.read_csv(path, sep=":")
+  return pd.read_csv(path)
 
 # for saving csv files
 def save_csv(dataframe, path):
-  dataframe.to_csv(path, sep=':', index=False)
+  dataframe.to_csv(path, index=False)
 
 # for creating folders
 

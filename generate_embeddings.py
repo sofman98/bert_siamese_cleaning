@@ -1,4 +1,4 @@
-from data_processing.file_management import load_csv
+from data_processing.file_management import load_parquet
 from data_processing.data_processing import filter_features
 import tensorflow.keras.layers as layers
 from tensorflow.keras.models import Model
@@ -9,7 +9,7 @@ import numpy as np
 # some important variables
 feature = 'name'
 save_embeddings_to = 'datasets/embeddings.npy'
-path_to_dataset = 'datasets/cs1_us_outlets.csv'
+path_to_dataset = 'datasets/cs1_us_outlets.parquet.gzip'
 
 # encoder info
 link_to_preprocessor = "https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3"
@@ -18,7 +18,7 @@ link_to_encoder = "https://tfhub.dev/tensorflow/small_bert/bert_en_uncased_L-2_H
 if __name__ == "__main__":
 
   # we first load the data
-  dataset = load_csv(path_to_dataset)
+  dataset = load_parquet(path_to_dataset)
 
   # we select the features
   ## we convert to numpy to accelerate the process

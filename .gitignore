@@ -1,12 +1,11 @@
 # the generated data
 datasets/*
-!datasets/cs1_us_outlets.csv
 !datasets/cs1_us_outlets.parquet.gzip
 !datasets/embeddings.npy
 # results
 results/*
-!results/models/
-!results/predictions/
+!results/models/best_model.h5
+!results/predictions/best_prediction.csv
 # cache
 data_processing/__pycache__
 models/__pycache__

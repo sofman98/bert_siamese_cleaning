@@ -1,4 +1,4 @@
-from data_processing.file_management import load_csv, load_dataset_parquet, save_csv
+from data_processing.file_management import load_parquet, save_parquet
 from data_processing.generate_similarity_dataset import generate_feature_similarity_dataset
 import numpy as np
 
@@ -12,21 +12,19 @@ train_max_neg = True # if True then NUM_NEG is useless, uses all negative instan
 train_kind = 'combinations' # 'combinations' or 'permutations'
 
 # loading path
-path_to_dataset = 'datasets/cs1_us_outlets.csv'
+path_to_dataset = 'datasets/cs1_us_outlets.parquet.gzip'
 path_to_embeddings = 'datasets/embeddings.npy'
 
 # saving path
-train_data_save_path = 'datasets/train.csv'
-test_data_save_path = 'datasets/test.csv'
+train_data_save_path = 'datasets/train.parquet.gzip'
+test_data_save_path = 'datasets/test.parquet.gzip'
 train_features_save_path = 'datasets/feature_similarity_train.npy'
 test_features_save_path = 'datasets/feature_similarity_test.npy'
 
 
 if __name__ == "__main__":
     # we load the dataset and the generated embeddings
-    # or load the .parquet.gzip file
-    # dataset = load_dataset_parquet('datasets/cs1_us_outlets.parquet.gzip')
-    dataset = load_csv(path_to_dataset)
+    dataset = load_parquet(path_to_dataset)
     embeddings = np.load(path_to_embeddings)
 
     # we split it
@@ -34,8 +32,8 @@ if __name__ == "__main__":
     train = dataset.drop(test.index)
 
     # saving the test and train sets
-    save_csv(train, train_data_save_path)
-    save_csv(test, test_data_save_path)
+    save_parquet(train, train_data_save_path)
+    save_parquet(test, test_data_save_path)
 
     # we add the embeddings
     test[f'{feature}_embedding'] = list(embeddings[test.index])
