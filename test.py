@@ -33,10 +33,9 @@ if __name__ == "__main__":
     num_features = int(X.shape[1] / 2)
     print('Predicting...')
     prediction = model.predict([X[:, :num_features], X[:, num_features:]], verbose=1)
-    prediction = np.round(prediction)
 
     # we calculate the confusion_matrix
-    conf_mat = confusion_matrix(y, prediction)
+    conf_mat = confusion_matrix(y, np.round(prediction))
     conf_mat = np.array(conf_mat)
 
     print('Saving the prediction...')
@@ -48,7 +47,7 @@ if __name__ == "__main__":
     pair_similarity_combinations = pair_similarity_combinations[:, :-1]
     # we save the the predictions as (outlet1, outlet2, predicted similarity) 
     predicted_similarity = np.append(pair_similarity_combinations, prediction, axis=1)
-    predicted_similarity = pd.DataFrame(predicted_similarity, columns=['outlet1', 'outlet2', 'similarity'], dtype=int)
+    predicted_similarity = pd.DataFrame(predicted_similarity, columns=['outlet1', 'outlet2', 'similarity'])
     create_folder(save_prediction_to)
     save_csv(predicted_similarity, save_prediction_to)
     print(f'Saved the prediction to {save_prediction_to}')

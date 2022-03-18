@@ -9,4 +9,4 @@ results/*
 # cache
 data_processing/__pycache__
 models/__pycache__
-.vscode/*
+.vscode
