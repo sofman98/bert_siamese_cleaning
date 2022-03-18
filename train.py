@@ -92,7 +92,7 @@ if __name__ == "__main__":
         )
 
         # when training is over
-        # we get the epoch with the best metric score
+        # we get the best registered scores
         loss = np.min(hist.history['val_loss'])
         metric_scores = [np.max(hist.history[f'val_{metric.name}']) for metric in metrics]
         ## then save the results along with the architecture for later
