@@ -20,8 +20,8 @@ results_save_path = 'results/grid_search_results/results.csv'
 last_model_save_path = 'results/models/last_trained_model.h5'
 
 # HYPER-PARAMETER RANGES (for tuning)
-range_num_dense_layers = [1, 2, 3] 
-range_embedding_size = [8, 16, 32]
+range_num_dense_layers = [0] 
+range_embedding_size = [0]
 range_optimizer = ['adam']
 
 if __name__ == "__main__":
