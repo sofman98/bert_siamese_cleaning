@@ -32,7 +32,7 @@ if __name__ == "__main__":
   # We split the dataset into train and test
   X = feature_similarity_dataset[:, :-1]
   y = feature_similarity_dataset[:, -1]
-  X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+  X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.25, random_state=0)
 
   # Callbacks
   ## early stopping
@@ -87,7 +87,7 @@ if __name__ == "__main__":
             epochs=num_epochs,
             batch_size=training_batch_size,
             verbose=1,
-            validation_data=([X_test[:, num_features:], X_test[:, :num_features]], y_test),
+            validation_data=([X_val[:, num_features:], X_val[:, :num_features]], y_val),
             callbacks=[es_callback, cp_callback]
         )
 
