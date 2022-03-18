@@ -1,13 +1,14 @@
-from os.path import exists
-from data_processing.file_management import create_folder
-from models.model_building import build_siamese_model
 import tensorflow as tf
 import numpy as np
+from os.path import exists
+from data_processing.file_management import create_folder
 from sklearn.model_selection import train_test_split
+from models.model_building import build_siamese_model
+from tensorflow.keras.metrics import Precision, Recall
 
 # training parameters
-metric = tf.keras.metrics.Precision()
-num_epochs = 2
+metrics = [Precision(), Recall()]
+num_epochs = 100
 training_batch_size = 64
 early_stopping_patience = 20
 
@@ -19,8 +20,8 @@ results_save_path = 'results/grid_search_results/results.csv'
 last_model_save_path = 'results/models/last_trained_model.h5'
 
 # HYPER-PARAMETER RANGES (for tuning)
-range_num_dense_layers = [0] 
-range_embedding_size = [0]
+range_num_dense_layers = [1, 2, 3] 
+range_embedding_size = [8, 16, 32]
 range_optimizer = ['adam']
 
 if __name__ == "__main__":
@@ -59,7 +60,7 @@ if __name__ == "__main__":
   ## only if file doesn't exist
   if not exists(results_save_path):
     with open(results_save_path, 'w') as file:
-        file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metric.name}\n") # title
+        file.write(f"num_dense_layers,embedding_size,optimizer,loss,{metrics[0].name},{metrics[1].name}\n") # title
   
 
   ########   GRID SEARCH   ########
@@ -78,7 +79,7 @@ if __name__ == "__main__":
             embedding_size=embedding_size,
             use_encoder=False
         )
-        model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=[metric])
+        model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=metrics)
 
         # Train
         hist = model.fit(
@@ -92,10 +93,9 @@ if __name__ == "__main__":
 
         # when training is over
         # we get the epoch with the best metric score
-        best_epoch = np.argmin(hist.history['val_loss'])
-        loss = hist.history['val_loss'][best_epoch]
-        metric_score = hist.history[f'val_{metric.name}'][best_epoch]
+        loss = np.min(hist.history['val_loss'])
+        metric_scores = [np.max(hist.history[f'val_{metric.name}']) for metric in metrics]
         ## then save the results along with the architecture for later
         with open(results_save_path, 'a') as file:
-          file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_score}\n')
+          file.write(f'{num_dense_layers},{embedding_size},{optimizer},{loss},{metric_scores[0]},{metric_scores[1]}\n')
         
