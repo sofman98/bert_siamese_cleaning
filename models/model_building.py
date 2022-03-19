@@ -27,7 +27,7 @@ def build_embedding_model(
   if use_encoder:
     encoder_inputs = preprocessor(inputs)
     encoder_outputs = encoder(encoder_inputs)
-    layer = encoder_outputs["pooled_output"]  # this is the resulting latent vector of shape [batch_size, 768]. 
+    layer = encoder_outputs["pooled_output"]  # this is the resulting latent vector of shape [batch_size, hidden_sized]. 
   else:
     layer = inputs
 
