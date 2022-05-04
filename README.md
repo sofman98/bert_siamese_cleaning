@@ -1,5 +1,5 @@
 # Data Cleaning with Bert Siamese Network
-## The task
+## The Task
 "One of our clients would like to have an overview of the Restaurants, Bars, Cafes and other F&B outlets present in the USA. To provide this service, we have obtained a collection of outlets from various food delivery platforms, such as Grubhub and Ubereats.
 
 Unfortunately, many outlets are present on multiple platforms or have multiple listings on the same platform and are therefore duplicated in our dataset. Luckily, we managed to clean the dataset by hand by assigning each group of outlets that belong together a unique identifier.
