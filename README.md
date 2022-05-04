@@ -14,7 +14,7 @@ The dataset consists of 3,575 rows and 8 columns, where each row represents an i
   1. Some people manually did the work and created a unique ID column called ```id_dashmote``` which has the same value for duplicate outlets.
   2. In the database there is a column called ```persistent_cluster```, which is a rough geographical neighborhood of the outlet, it’s relevant because duplicates are found in a same cluster, which means that we only have to look for duplicates per cluster rather than in the entire database.
 
-I needed to convert the database into the format (outlet1, outlet2, duplicate) with the column « duplicate » being a boolean value (0 or 1) representing whether or not the two outlets are duplicates.
+I needed to convert the data into the format ```(outlet1, outlet2, similarity)``` with the column ```similarity``` being a boolean value (0 or 1) representing whether or not the two outlets are duplicates.
 
 The task was straightforward for positive instances in which duplicate==1, but I also needed to add some negative instances, and as there can be many more negative instances than positive ones, the dataset would be immensely imbalanced, so what I did is that I regulated the number of negative instances with a parameter I called NUM_NEG representing the number of negative instances per outlet. 
 
